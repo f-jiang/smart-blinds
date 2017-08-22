@@ -1,0 +1,8 @@
+- arduino uno: ~$15
+- bluetooth module: $10
+- motor: $20
+- motor controller: $5
+- motor bracket: $5
+- aluminum plating:
+- aluminum support beam
+- acrylic [?] spool

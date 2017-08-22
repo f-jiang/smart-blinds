@@ -1,0 +1,4 @@
+powering arduino - options:
+- barrel jack 7-12V regulated
+- vin 7-12V regulated
+- usb 5V unregulated
