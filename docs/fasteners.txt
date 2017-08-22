@@ -18,6 +18,7 @@ bracket:
 
 relay board:
 - 4 bolts 4 standoffs M3
+- hole spacing: 49.25 mm, 130.5 mm
 
 total:
 - 12 M3 standoffs (for l298n, arduino, and relay board)
