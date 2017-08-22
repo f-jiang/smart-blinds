@@ -1,0 +1,35 @@
+arduino uno:
+- 4 bolts 4 standoffs: #4-40 or M3-0.5
+
+bt module:
+- 2 longer M3 bolts
+
+l298n:
+- 4 bolts 4 standoffs: #8 or M4 or #4-40 or M3-0.5
+  - holes are ~1.6mm from edge
+  - spacing between holes: ~35.76mm
+
+stepper:
+- 4 M3 or #4 bolts
+
+bracket:
+- 4 bolts of unknown size, likely long
+- possibly spacers
+
+relay board:
+- 4 bolts 4 standoffs M3
+
+total:
+- 12 M3 standoffs (for l298n, arduino, and relay board)
+- 12 M3 bolts (for l298n, arduino, and relay board)
+- 4 4mm M3 bolts (for motor)
+- 4 longer * bolts (for bracket)
+- 2 longer M3 bolts (for bt module)
+
+base board:
+- 4 tapped holes for arduino
+- 4 tapped holes for l298n
+- 4 tapped holes for relay board
+- 2 tapped holes for bt module
+- 4 tapped holes for mounting bracket
+- adhesive mounting brackets
