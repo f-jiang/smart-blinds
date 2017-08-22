@@ -1,8 +1,12 @@
 - arduino uno: ~$15
+- [sensor shield]: $13
 - bluetooth module: $10
-- motor: $20
-- motor controller: $5
-- motor bracket: $5
-- aluminum plating:
-- aluminum support beam
-- acrylic [?] spool
+- motor controller: $14
+- motor: $19
+- motor bracket: $10
+- 12V adapter: $14
+- relay board: $11
+
+- acrylic board
+- screws, standoffs, etc.
+- motor attachments
