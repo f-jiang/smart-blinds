@@ -11,6 +11,5 @@ scenario 1 - ideal, assuming motor is strong enough:
 scenario 2 - 12V motor:
 - will need a 12 V adapter with terminal block connector
 - cannot use arduino jack and vin to transfer 12V power since too much current
-  - will need relay board
-- motor will get power from relay board, and motor controller from arduino
-- parts to order: motor, motor bracket, screws, 12V adapter, relay board
+- motor and motor controller will get power directly from source
+- parts to order: motor, motor bracket, screws, 12V adapter, protoboard

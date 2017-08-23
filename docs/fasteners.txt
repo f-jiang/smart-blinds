@@ -16,13 +16,13 @@ bracket:
 - 4 bolts of unknown size, likely long
 - possibly spacers
 
-relay board:
+protoboard:
 - 4 bolts 4 standoffs M3
-- hole spacing: 49.25 mm, 130.5 mm
+- hole spacing (tentative): 50 mm x 70 mm
 
 total:
-- 12 M3 standoffs (for l298n, arduino, and relay board)
-- 12 M3 bolts (for l298n, arduino, and relay board)
+- 12 M3 standoffs (for l298n, arduino, and protoboard)
+- 12 M3 bolts (for l298n, arduino, and protoboard)
 - 4 4mm M3 bolts (for motor)
 - 4 longer * bolts (for bracket)
 - 2 longer M3 bolts (for bt module)
@@ -30,7 +30,7 @@ total:
 base board:
 - 4 tapped holes for arduino
 - 4 tapped holes for l298n
-- 4 tapped holes for relay board
+- 4 tapped holes for protoboard
 - 2 tapped holes for bt module
 - 4 tapped holes for mounting bracket
 - adhesive mounting brackets

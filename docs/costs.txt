@@ -5,7 +5,7 @@
 - motor: $19
 - motor bracket: $10
 - 12V adapter: $14
-- relay board: $10
+- protoboard: $0.30
 
 - acrylic board
 - screws, standoffs, etc.
