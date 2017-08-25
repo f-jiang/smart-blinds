@@ -1,0 +1,7 @@
+app to arduino:
+- signal to switch between open and closed position
+- manual position adjustment
+- location of, or distance between, open and closed positions [?]
+
+arduino to app:
+
