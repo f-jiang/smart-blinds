@@ -1,0 +1,9 @@
+- main
+  - two modes: 
+    - custom time: set custom times at which to set blinds to open and close positions from calibration
+    - [automatic: automatically open and close blinds based on your location's sunrise and sundown times]
+  - manual blinds control
+- sync
+  - pair with device
+- calibrate
+  - manually set open and closed positions
