@@ -1,0 +1,9 @@
+mechanical design:
+- make the stepper motor's position adjustable
+  - attach the motor to a flexible tube-like arm
+- reduce blinds cord slippage
+  - by using a vertical holder
+  - by cutting out a "circle" of holes, allowing the l-bracket to be mounted at a variey of angles
+
+mobile app:
+- automatically determine opening and closing times based on location
