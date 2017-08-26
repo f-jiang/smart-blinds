@@ -4,4 +4,4 @@ app to arduino:
 - location of, or distance between, open and closed positions [?]
 
 arduino to app:
-
+- stepper motor position
