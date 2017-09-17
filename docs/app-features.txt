@@ -7,3 +7,14 @@
   - pair with device
 - calibrate
   - manually set open and closed positions
+  
+--------------------------------------------------------------------------------------------------------------------
+
+- activities: main, sync, calibrate
+- SharedPreferences for current mode and open/closing times and positions
+- could use PreferenceFragment for calibration screen settings
+- use onSharedPreferenceChangeListener to update UI after preference changes
+  - in onSharedPreferenceChangeListener of activity to be updated:
+    - implement on onSharedPreferenceChanged
+    - registerOnSharedPreferenceChangeListener
+    - unregisterOnSharedPreferenceChangeListener
