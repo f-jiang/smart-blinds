@@ -1,5 +1,6 @@
 - main
-  - two modes: 
+  - on/off switch for timed blinds opening
+  - timed opening - two modes: 
     - custom time: set custom times at which to set blinds to open and close positions from calibration
     - [automatic: automatically open and close blinds based on your location's sunrise and sundown times]
   - manual blinds control
@@ -18,3 +19,13 @@
     - implement on onSharedPreferenceChanged
     - registerOnSharedPreferenceChangeListener
     - unregisterOnSharedPreferenceChangeListener
+- alarmmanager for scheduled blinds adjustments
+
+- main activity: two options
+  - preferences activity with custom preference for blinds position adjustment, and custom preference for switch/time select
+  - regular activity:
+    - with linearlayout
+    - fragments for time and position controls, or a "compound component": https://developer.android.com/guide/topics/ui/custom-components.html
+    - and sharedpreferences.editor to update settings
+  
+  
