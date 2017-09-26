@@ -1,4 +1,4 @@
-package com.github.f_jiang.smartblindscontrol;
+package smartblindscontrol.f_jiang.github.com.smartblindscontrol;
 
 import org.junit.Test;
 
