@@ -2,8 +2,12 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
+        android:key="auto_open_switch"
+        android:title="@string/pref_title_auto_open" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="auto_close_switch"
+        android:title="@string/pref_title_auto_close" />
 
 </PreferenceScreen>
