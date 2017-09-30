@@ -2,6 +2,6 @@
 <fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_smart_blinds_control"
-    android:name="smartblindscontrol.f_jiang.github.com.smartblindscontrol.SmartBlindsControlActivity$GeneralPreferenceFragment"
+    android:name="smartblindscontrol.f_jiang.github.com.smartblindscontrol.SmartBlindsControlActivity$SmartBlindsControlPreferenceFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
