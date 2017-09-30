@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:defaultValue="@bool/pref_title_auto_open_default"
+        android:defaultValue="@bool/pref_auto_open_default_value"
         android:key="auto_open_switch"
         android:title="@string/pref_title_auto_open" />
 
@@ -11,7 +11,7 @@
         />
 
     <SwitchPreference
-        android:defaultValue="@bool/pref_title_auto_close_default"
+        android:defaultValue="@bool/pref_auto_close_default_value"
         android:key="auto_close_switch"
         android:title="@string/pref_title_auto_close" />
 
