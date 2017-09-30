@@ -9,6 +9,8 @@
 
     <!-- Example General settings -->
     <string name="pref_title_auto_open">Open blinds at scheduled time</string>
+    <string name="pref_title_auto_open_time">Scheduled opening time</string>
     <string name="pref_title_auto_close">Close blinds at scheduled time</string>
+    <string name="pref_title_auto_close_time">Scheduled closing time</string>
 
 </resources>

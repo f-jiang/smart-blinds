@@ -5,9 +5,19 @@
         android:key="auto_open_switch"
         android:title="@string/pref_title_auto_open" />
 
+    <smartblindscontrol.f_jiang.github.com.smartblindscontrol.TimePreference
+        android:key="auto_open_time_dialog"
+        android:title="@string/pref_title_auto_open_time"
+        />
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="auto_close_switch"
         android:title="@string/pref_title_auto_close" />
+
+    <smartblindscontrol.f_jiang.github.com.smartblindscontrol.TimePreference
+        android:key="auto_close_time_dialog"
+        android:title="@string/pref_title_auto_close_time"
+        />
 
 </PreferenceScreen>
