@@ -28,6 +28,7 @@ public class TimePreference extends DialogPreference {
         return Integer.parseInt(pieces[1]);
     }
 
+    // TODO get time picker from xml layout, and set top padding
     public TimePreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         setPositiveButtonText("Set");
