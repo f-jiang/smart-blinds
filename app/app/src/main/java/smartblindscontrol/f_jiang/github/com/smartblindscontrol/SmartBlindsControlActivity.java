@@ -115,6 +115,7 @@ public class SmartBlindsControlActivity extends AppCompatPreferenceActivity {
                     if (preference instanceof SwitchPreference) {
                         boolean hideTimePreference = sharedPreferences.getBoolean(key, false);
 
+                        // TODO use String.equals()
                         if (key == resources.getString(R.string.pref_key_auto_open)) {
                             preferenceScreen.findPreference(resources.getString(R.string.pref_key_auto_open_time))
                                     .setEnabled(hideTimePreference);
