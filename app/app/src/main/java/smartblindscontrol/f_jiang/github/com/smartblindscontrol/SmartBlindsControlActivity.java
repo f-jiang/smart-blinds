@@ -4,13 +4,18 @@ package smartblindscontrol.f_jiang.github.com.smartblindscontrol;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -83,12 +88,62 @@ public class SmartBlindsControlActivity extends AppCompatPreferenceActivity {
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class SmartBlindsControlPreferenceFragment extends PreferenceFragment {
+    public static class SmartBlindsControlPreferenceFragment
+            extends PreferenceFragment
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_smart_blinds_control);
             setHasOptionsMenu(true);
+            getPreferenceScreen().getSharedPreferences()
+                    .registerOnSharedPreferenceChangeListener(this);
+
+            // here: set time dialogs' summaries, either to default value or from saved value
+            SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+            PreferenceScreen preferenceScreen = getPreferenceScreen();
+            Resources resources = getResources();
+            int count = preferenceScreen.getPreferenceCount();
+
+            for (int i = 0; i < count; i++) {
+                Preference preference = preferenceScreen.getPreference(i);
+                String key = preference.getKey();
+
+                // TODO refactor repeated code
+                if (preference != null) {
+                    if (preference instanceof SwitchPreference) {
+                        boolean hideTimePreference = sharedPreferences.getBoolean(key, false);
+
+                        if (key == resources.getString(R.string.pref_key_auto_open)) {
+                            preferenceScreen.findPreference(resources.getString(R.string.pref_key_auto_open_time))
+                                    .setEnabled(hideTimePreference);
+                        } else if (key == resources.getString(R.string.pref_key_auto_close)) {
+                            preferenceScreen.findPreference(resources.getString(R.string.pref_key_auto_close_time))
+                                    .setEnabled(hideTimePreference);
+                        }
+                    } else if (preference instanceof TimePreference) {
+                        TimePreference timePreference = (TimePreference) preference;
+
+                        // TODO put default time in string resource xml or TimePreference class?
+                        // TODO 24 time format
+                        String time = sharedPreferences.getString(key, "00:00");
+
+                        if (key == resources.getString(R.string.pref_key_auto_open_time)) {
+                            timePreference.setSummary("Automatically open blinds at " + time);
+                        } else if (key == resources.getString(R.string.pref_key_auto_close_time)) {
+                            timePreference.setSummary("Automatically close blinds at " + time);
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            getPreferenceScreen().getSharedPreferences()
+                    .unregisterOnSharedPreferenceChangeListener(this);
         }
 
         @Override
@@ -100,6 +155,43 @@ public class SmartBlindsControlActivity extends AppCompatPreferenceActivity {
             }
             return super.onOptionsItemSelected(item);
         }
+
+        // implement onsharedpreferencechangelistener or preference.onpreferecechangelistener,
+        // then update the summaries from there
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Preference preference = findPreference(key);
+            Resources resources = getResources();
+
+            // TODO refactor repeated code
+            if (preference != null) {
+                if (preference instanceof SwitchPreference) {
+                    PreferenceScreen preferenceScreen = getPreferenceScreen();
+                    boolean hideTimePreference = sharedPreferences.getBoolean(key, false);
+
+                    if (key == resources.getString(R.string.pref_key_auto_open)) {
+                        preferenceScreen.findPreference(resources.getString(R.string.pref_key_auto_open_time))
+                                .setEnabled(hideTimePreference);
+                    } else if (key == resources.getString(R.string.pref_key_auto_close)) {
+                        preferenceScreen.findPreference(resources.getString(R.string.pref_key_auto_close_time))
+                                .setEnabled(hideTimePreference);
+                    }
+                } else if (preference instanceof TimePreference) {
+                    TimePreference timePreference = (TimePreference) preference;
+
+                    // TODO put default time in string resource xml or TimePreference class?
+                    // TODO 24 time format
+                    String time = sharedPreferences.getString(key, "00:00");
+
+                    if (key == resources.getString(R.string.pref_key_auto_open_time)) {
+                        timePreference.setSummary("Automatically open blinds at " + time);
+                    } else if (key == resources.getString(R.string.pref_key_auto_close_time)) {
+                        timePreference.setSummary("Automatically close blinds at " + time);
+                    }
+                }
+            }
+        }
+
     }
 
 }

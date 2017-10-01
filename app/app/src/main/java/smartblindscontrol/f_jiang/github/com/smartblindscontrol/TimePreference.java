@@ -78,6 +78,7 @@ public class TimePreference extends DialogPreference {
 
         if (restoreValue) {
             if (defaultValue == null) {
+                // TODO put default time in string resource xml or TimePreference class?
                 time = getPersistedString("00:00");
             } else {
                 time = getPersistedString(defaultValue.toString());
