@@ -6,16 +6,16 @@
     <string name="action_calibrate">Calibrate Smart Blinds</string>
 
     <!-- Strings related to Settings -->
-    <string name="pref_key_auto_open">auto_open_switch</string>
+    <string name="pref_key_auto_open">auto_open</string>
     <string name="pref_title_auto_open">Open blinds at scheduled time</string>
 
-    <string name="pref_key_auto_open_time">auto_open_time_dialog</string>
+    <string name="pref_key_auto_open_time">auto_open_time</string>
     <string name="pref_title_auto_open_time">Scheduled opening time</string>
 
-    <string name="pref_key_auto_close">auto_close_switch</string>
+    <string name="pref_key_auto_close">auto_close</string>
     <string name="pref_title_auto_close">Close blinds at scheduled time</string>
 
-    <string name="pref_key_auto_close_time">auto_close_time_dialog</string>
+    <string name="pref_key_auto_close_time">auto_close_time</string>
     <string name="pref_title_auto_close_time">Scheduled closing time</string>
 
 </resources>
