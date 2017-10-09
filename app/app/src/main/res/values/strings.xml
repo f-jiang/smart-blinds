@@ -21,4 +21,8 @@
     <string name="pref_key_blinds_position">blinds_position</string>
     <string name="pref_title_blinds_position">Blinds position</string>
 
+    <!-- Strings related to Calibration -->
+    <string name="button_set_min">Set min</string>
+    <string name="button_set_max">Set max</string>
+
 </resources>

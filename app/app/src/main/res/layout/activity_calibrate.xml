@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="smartblindscontrol.f_jiang.github.com.smartblindscontrol.CalibrateActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.45"
+        android:orientation="horizontal" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/bottom_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.9"
+        android:orientation="horizontal" />
+
+    <ImageButton
+        android:id="@+id/up_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/top_guideline"
+        style="?android:attr/borderlessButtonStyle"
+        android:src="@drawable/ic_keyboard_arrow_up_black_24dp" />
+
+    <ImageButton
+        android:id="@+id/down_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_guideline"
+        app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+        style="?android:attr/borderlessButtonStyle"
+        android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
+
+    <Button
+        android:id="@+id/set_min_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/down_button"
+        app:layout_constraintRight_toLeftOf="@+id/set_max_button"
+        app:layout_constraintTop_toBottomOf="@id/bottom_guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/button_set_min" />
+
+    <Button
+        android:id="@+id/set_max_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="@id/down_button"
+        app:layout_constraintLeft_toRightOf="@+id/set_min_button"
+        app:layout_constraintTop_toBottomOf="@id/bottom_guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/button_set_max" />
+
+</android.support.constraint.ConstraintLayout>

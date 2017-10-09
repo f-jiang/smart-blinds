@@ -51,7 +51,7 @@ public class SmartBlindsControlActivity extends AppCompatPreferenceActivity {
         if (id == R.id.action_sync) {
             // open sync activity
         } else if (id == R.id.action_calibrate) {
-            // open calibrate activity
+            startActivity(new Intent(this, CalibrateActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
