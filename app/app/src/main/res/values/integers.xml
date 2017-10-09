@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="pref_blinds_position_min_value">-100</integer>
+    <integer name="pref_blinds_position_max_value">100</integer>
+    <integer name="pref_blinds_position_default_value">0</integer>
+</resources>

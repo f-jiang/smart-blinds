@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
         android:defaultValue="@bool/pref_auto_open_default_value"
@@ -20,4 +21,11 @@
         android:title="@string/pref_title_auto_close_time"
         />
 
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:defaultValue="@integer/pref_blinds_position_default_value"
+        android:key="@string/pref_key_blinds_position"
+        android:title="@string/pref_title_blinds_position"
+        app:msbp_minValue="@integer/pref_blinds_position_min_value"
+        app:msbp_maxValue="@integer/pref_blinds_position_max_value"
+        />
 </PreferenceScreen>
