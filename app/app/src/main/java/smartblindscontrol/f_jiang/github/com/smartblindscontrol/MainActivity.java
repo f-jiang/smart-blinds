@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import smartblindscontrol.f_jiang.github.com.smartblindscontrol.adapters.ResViewAdapter;
 import smartblindscontrol.f_jiang.github.com.smartblindscontrol.data.Blind_Unit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ResViewAdapter.OnItemClicked {
     ResViewAdapter viewAdapter;
     RecyclerView my_recycler_view;
 
@@ -50,4 +50,9 @@ public class MainActivity extends AppCompatActivity {
         my_recycler_view.setAdapter(viewAdapter);
     }
 
+    @Override
+    public void onItemClick(int position) {
+        // open the activity to show the detail of the blind by position index
+        // often cases start activity of that sort
+    }
 }
