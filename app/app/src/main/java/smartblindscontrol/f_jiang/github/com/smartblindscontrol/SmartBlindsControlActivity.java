@@ -36,6 +36,7 @@ public class SmartBlindsControlActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_blinds_control);
+        // Yolo test push
     }
 
     @Override
