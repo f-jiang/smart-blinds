@@ -24,5 +24,6 @@
     <!-- Strings related to Calibration -->
     <string name="button_set_min">Set min</string>
     <string name="button_set_max">Set max</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
