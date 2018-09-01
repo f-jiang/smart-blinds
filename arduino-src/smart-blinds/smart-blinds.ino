@@ -63,6 +63,8 @@ void test();
 #endif  // TEST
 
 void setup() {
+    Serial.begin(9600);
+
     // TODO load position from eeprom
 
     relay.begin();
