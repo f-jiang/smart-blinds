@@ -73,7 +73,9 @@ void setup() {
     relay.close();
 
 #ifdef TEST
+    Serial.println("Running tests...");
     test();
+    Serial.println("Tests complete and successful");
 #endif  // TEST
 }
 
