@@ -25,7 +25,7 @@
 
 #ifdef TEST
 #define TEST_STEPPER_POS_LOWER_LIMIT    0
-#define TEST_STEPPER_POS_UPPER_LIMIT    10
+#define TEST_STEPPER_POS_UPPER_LIMIT    100
 #define TEST_STEPPER_DEFAULT_POS        ((TEST_STEPPER_POS_LOWER_LIMIT +    \
                                           TEST_STEPPER_POS_UPPER_LIMIT) /   \
                                          2)
@@ -372,7 +372,7 @@ void test() {
                                              TEST_STEPPER_DEFAULT_POS,
                                              TEST_STEPPER_POS_UPPER_LIMIT);
     relay.open();
-    assert(!setStepperPos(TEST_STEPPER_DEFAULT_POS));
+    assert(!setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT));
     assert(!incrementStepperPos());
     assert(!decrementStepperPos());
 
@@ -392,8 +392,8 @@ void test() {
                                              TEST_STEPPER_POS_UPPER_LIMIT);
     relay.close();
     // success on setting position
-    assert(setStepperPos(TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE));
-    assert(stepperPos == TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE);
+    assert(setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT));
+    assert(stepperPos == TEST_STEPPER_POS_LOWER_LIMIT);
     // success on incrementing position
     setStepperPos(TEST_STEPPER_DEFAULT_POS);
     assert(incrementStepperPos());
