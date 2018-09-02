@@ -382,9 +382,9 @@ void test() {
                                              TEST_STEPPER_POS_UPPER_LIMIT);
     relay.close();
     assert(!setStepperPos(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    stepperPos = TEST_STEPPER_POS_UPPER_LIMIT;
+    setStepperPos(TEST_STEPPER_POS_UPPER_LIMIT);
     assert(!incrementStepperPos());
-    stepperPos = TEST_STEPPER_POS_LOWER_LIMIT;
+    setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT);
     assert(!decrementStepperPos());
 
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
@@ -395,11 +395,11 @@ void test() {
     assert(setStepperPos(TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE));
     assert(stepperPos == TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE);
     // success on incrementing position
-    stepperPos = TEST_STEPPER_DEFAULT_POS;
+    setStepperPos(TEST_STEPPER_DEFAULT_POS);
     assert(incrementStepperPos());
     assert(stepperPos == TEST_STEPPER_DEFAULT_POS + STEP_INCREMENT_SIZE);
     // success on decrementing position
-    stepperPos = TEST_STEPPER_DEFAULT_POS;
+    setStepperPos(TEST_STEPPER_DEFAULT_POS);
     assert(decrementStepperPos());
     assert(stepperPos == TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE);
 
