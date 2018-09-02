@@ -33,7 +33,7 @@ void setup()
     relay.begin();
     stepper.setSpeed(RPM);
 
-    relay.close();
+    relay.open();
 
 #ifdef TEST_DEBUG
     Serial.println("Running tests...");
