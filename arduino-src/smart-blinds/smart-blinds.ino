@@ -62,7 +62,8 @@ void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi);
 void test();
 #endif  // TEST
 
-void setup() {
+void setup()
+{
     Serial.begin(9600);
 
     // TODO load position from eeprom
@@ -79,10 +80,12 @@ void setup() {
 #endif  // TEST
 }
 
-void loop() {
+void loop()
+{
 }
 
-StepperPositionScaleType getStepperPositionScaleType() {
+StepperPositionScaleType getStepperPositionScaleType()
+{
     StepperPositionScaleType retval;
 
     if (!isStepperCalibrated()) {
@@ -96,13 +99,15 @@ StepperPositionScaleType getStepperPositionScaleType() {
     return retval;
 }
 
-bool isStepperCalibrated() {
+bool isStepperCalibrated()
+{
     return (stepperPos != POSITION_UNDEFINED) &&
            (stepperPosLowerLimit != POSITION_UNDEFINED) &&
            (stepperPosUpperLimit != POSITION_UNDEFINED);
 }
 
-bool isPosOutOfBounds(int pos) {
+bool isPosOutOfBounds(int pos)
+{
     bool retval;
 
     StepperPositionScaleType scaleType = getStepperPositionScaleType();
@@ -122,7 +127,8 @@ bool isPosOutOfBounds(int pos) {
     return retval;
 }
 
-bool getStepperPos(int& pos) {
+bool getStepperPos(int& pos)
+{
     bool success = false;
 
     if (isStepperCalibrated()) {
@@ -133,7 +139,8 @@ bool getStepperPos(int& pos) {
     return success;
 }
 
-bool setStepperPos(int pos) {
+bool setStepperPos(int pos)
+{
     bool success = false;
 
     if (isStepperCalibrated() && relay.isClosed() && !isPosOutOfBounds(pos)) {
@@ -159,7 +166,8 @@ bool setStepperPos(int pos) {
     return success;
 }
 
-bool incrementStepperPos() {
+bool incrementStepperPos()
+{
     bool success = true;
 
     int newPos;
@@ -180,7 +188,8 @@ bool incrementStepperPos() {
     return success;
 }
 
-bool decrementStepperPos() {
+bool decrementStepperPos()
+{
     bool success = true;
 
     int newPos;
@@ -201,7 +210,8 @@ bool decrementStepperPos() {
     return success;
 }
 
-bool getStepperPosLowerLimit(int& pos) {
+bool getStepperPosLowerLimit(int& pos)
+{
     bool success = false;
 
     if (isStepperCalibrated()) {
@@ -213,7 +223,8 @@ bool getStepperPosLowerLimit(int& pos) {
 }
 
 // TODO enforce lower != upper?
-bool setStepperPosLowerLimit(int pos) {
+bool setStepperPosLowerLimit(int pos)
+{
     bool success = false;
 
     if (!relay.isClosed()) {
@@ -224,7 +235,8 @@ bool setStepperPosLowerLimit(int pos) {
     return success;
 }
 
-bool getStepperPosUpperLimit(int& pos) {
+bool getStepperPosUpperLimit(int& pos)
+{
     bool success = false;
 
     if (isStepperCalibrated()) {
@@ -236,7 +248,8 @@ bool getStepperPosUpperLimit(int& pos) {
 }
 
 // TODO enforce lower != upper?
-bool setStepperPosUpperLimit(int pos) {
+bool setStepperPosUpperLimit(int pos)
+{
     bool success = false;
 
     if (!relay.isClosed()) {
@@ -270,25 +283,29 @@ void __assert(const char *__func, const char *__file, int __lineno, const char *
     abort();
 }
 
-void uncalibrate() {
+void uncalibrate()
+{
     stepperPos = POSITION_UNDEFINED;
     stepperPosLowerLimit = POSITION_UNDEFINED;
     stepperPosUpperLimit = POSITION_UNDEFINED;
 }
 
-void position_and_calibrate_with_normal_scale(int lo, int pos, int hi) {
+void position_and_calibrate_with_normal_scale(int lo, int pos, int hi)
+{
     stepperPos = pos;
     stepperPosLowerLimit = lo;
     stepperPosUpperLimit = hi;
 }
 
-void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi) {
+void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi)
+{
     stepperPos = pos;
     stepperPosLowerLimit = hi;
     stepperPosUpperLimit = lo;
 }
 
-void test() {
+void test()
+{
     int pos;
 
     /* test predefined position values */
