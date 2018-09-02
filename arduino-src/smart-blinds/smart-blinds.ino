@@ -338,14 +338,14 @@ void test() {
                                              TEST_STEPPER_POS_UPPER_LIMIT);
     assert(!isPosOutOfBounds(TEST_STEPPER_DEFAULT_POS));
     assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT - STEP_INCREMENT_SIZE));
+    assert(isPosOutOfBounds(TEST_STEPPER_POS_LOWER_LIMIT - STEP_INCREMENT_SIZE));
 
     position_and_calibrate_with_inverted_scale(TEST_STEPPER_POS_LOWER_LIMIT,
                                                TEST_STEPPER_DEFAULT_POS,
                                                TEST_STEPPER_POS_UPPER_LIMIT);
     assert(!isPosOutOfBounds(TEST_STEPPER_DEFAULT_POS));
     assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT - STEP_INCREMENT_SIZE));
+    assert(isPosOutOfBounds(TEST_STEPPER_POS_LOWER_LIMIT - STEP_INCREMENT_SIZE));
 
     /* getStepperPos() */
 
