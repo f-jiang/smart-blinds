@@ -1,66 +1,28 @@
-#define TEST
+#define TEST_DEBUG
 
-#ifdef TEST
-#define __ASSERT_USE_STDERR
-#include <assert.h>
-#endif  // TEST
-#include <limits.h>
+#include "smart-blinds.h"
 
-#include <Stepper.h>
-#include <Relay.h>
+#ifdef TEST_DEBUG
+#include "tests.h"
+#endif  // TEST_DEBUG
 
-#define STEPPER_A                       8
-#define STEPPER_B                       9
-#define STEPPER_C                       10
-#define STEPPER_D                       11
-#define RPM                             15
-#define STEP_ANGLE                      1.8
-#define STEP_INCREMENT_SIZE             1
-#define STEPS_PER_REVOLUTION            (360.0 / STEP_ANGLE)
-#define POSITION_UNDEFINED              (INT_MAX - 1)
+#define STEPPER_A               8
+#define STEPPER_B               9
+#define STEPPER_C               10
+#define STEPPER_D               11
+#define RPM                     15
+#define STEP_ANGLE              1.8
+#define STEPS_PER_REVOLUTION    (360.0 / STEP_ANGLE)
 
-#define RELAY_PIN                       6
+#define RELAY_PIN               6
 
-#define BUTTON_PIN                      7
-
-#ifdef TEST
-#define TEST_STEPPER_POS_LOWER_LIMIT    0
-#define TEST_STEPPER_POS_UPPER_LIMIT    100
-#define TEST_STEPPER_DEFAULT_POS        ((TEST_STEPPER_POS_LOWER_LIMIT +    \
-                                          TEST_STEPPER_POS_UPPER_LIMIT) /   \
-                                         2)
-#endif  // TEST
-
-enum StepperPositionScaleType {
-    NORMAL,
-    INVERTED,
-    UNDEFINED
-};
+#define BUTTON_PIN              7
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
 int stepperPos = POSITION_UNDEFINED;
 int stepperPosLowerLimit = POSITION_UNDEFINED;
 int stepperPosUpperLimit = POSITION_UNDEFINED;
-
-StepperPositionScaleType getStepperPositionScaleType();
-bool isStepperCalibrated();
-bool isPosOutOfBounds(int pos);
-bool getStepperPos(int& pos);
-bool setStepperPos(int pos);
-bool incrementStepperPos();
-bool decrementStepperPos();
-bool getStepperPosLowerLimit(int& pos);
-bool setStepperPosLowerLimit(int pos);
-bool getStepperPosUpperLimit(int& pos);
-bool setStepperPosUpperLimit(int pos);
-#ifdef TEST
-void __assert(const char *__func, const char *__file, int __lineno, const char *__sexp);
-void uncalibrate();
-void position_and_calibrate_with_normal_scale(int lo, int pos, int hi);
-void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi);
-void test();
-#endif  // TEST
 
 void setup()
 {
@@ -73,11 +35,11 @@ void setup()
 
     relay.close();
 
-#ifdef TEST
+#ifdef TEST_DEBUG
     Serial.println("Running tests...");
     test();
     Serial.println("Tests complete and successful");
-#endif  // TEST
+#endif  // TEST_DEBUG
 }
 
 void loop()
@@ -259,192 +221,4 @@ bool setStepperPosUpperLimit(int pos)
 
     return success;
 }
-
-#ifdef TEST
-void __assert(const char *__func, const char *__file, int __lineno, const char *__sexp)
-{
-    Serial.print("Assertion failed: (");
-    Serial.print(__sexp);
-    Serial.print("), ");
-    if (__func != NULL) {
-      Serial.print("function ");
-      Serial.print(__func);
-      Serial.print(", ");
-    }
-    Serial.print("file ");
-    Serial.print(__file);
-    Serial.print(", ");
-    Serial.print("line ");
-    Serial.println(__lineno, DEC);
-    Serial.print("\n");
-
-    Serial.flush();
-    // abort program execution.
-    abort();
-}
-
-void uncalibrate()
-{
-    stepperPos = POSITION_UNDEFINED;
-    stepperPosLowerLimit = POSITION_UNDEFINED;
-    stepperPosUpperLimit = POSITION_UNDEFINED;
-}
-
-void position_and_calibrate_with_normal_scale(int lo, int pos, int hi)
-{
-    stepperPos = pos;
-    stepperPosLowerLimit = lo;
-    stepperPosUpperLimit = hi;
-}
-
-void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi)
-{
-    stepperPos = pos;
-    stepperPosLowerLimit = hi;
-    stepperPosUpperLimit = lo;
-}
-
-void test()
-{
-    int pos;
-
-    /* test predefined position values */
-    assert(STEP_INCREMENT_SIZE > 0);
-    assert(TEST_STEPPER_POS_LOWER_LIMIT != POSITION_UNDEFINED);
-    assert(TEST_STEPPER_POS_UPPER_LIMIT != POSITION_UNDEFINED);
-    assert(TEST_STEPPER_DEFAULT_POS != POSITION_UNDEFINED);
-    assert(TEST_STEPPER_POS_LOWER_LIMIT != TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(abs(TEST_STEPPER_DEFAULT_POS - TEST_STEPPER_POS_LOWER_LIMIT) >= STEP_INCREMENT_SIZE);
-    assert(abs(TEST_STEPPER_POS_UPPER_LIMIT - TEST_STEPPER_DEFAULT_POS) >= STEP_INCREMENT_SIZE);
-
-    /* getStepperPositionScaleType() */
-
-    uncalibrate();
-    assert(getStepperPositionScaleType() == UNDEFINED);
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(getStepperPositionScaleType() == NORMAL);
-
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                               TEST_STEPPER_DEFAULT_POS,
-                                               TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(getStepperPositionScaleType() == INVERTED);
-
-    /* isStepperCalibrated() */
-
-    uncalibrate();
-    assert(!isStepperCalibrated());
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(isStepperCalibrated());
-
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                               TEST_STEPPER_DEFAULT_POS,
-                                               TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(isStepperCalibrated());
-
-    /* isPosOutOfBounds() */
-
-    uncalibrate();
-    assert(isPosOutOfBounds(TEST_STEPPER_DEFAULT_POS));
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(!isPosOutOfBounds(TEST_STEPPER_DEFAULT_POS));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_LOWER_LIMIT - STEP_INCREMENT_SIZE));
-
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                               TEST_STEPPER_DEFAULT_POS,
-                                               TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(!isPosOutOfBounds(TEST_STEPPER_DEFAULT_POS));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    assert(isPosOutOfBounds(TEST_STEPPER_POS_LOWER_LIMIT - STEP_INCREMENT_SIZE));
-
-    /* getStepperPos() */
-
-    uncalibrate();
-    assert(!getStepperPos(pos));
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(getStepperPos(pos));
-    assert(pos == stepperPos);
-
-    /* setStepperPos(), incrementStepperPos(), decrementStepperPos() */
-
-    // fail when uncalibrated
-    uncalibrate();
-    relay.close();
-    assert(!setStepperPos(TEST_STEPPER_DEFAULT_POS));
-    assert(!incrementStepperPos());
-    assert(!decrementStepperPos());
-
-    // fail when stepper off (relay open)
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    relay.open();
-    assert(!setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT));
-    assert(!incrementStepperPos());
-    assert(!decrementStepperPos());
-
-    // fail when calibrated, but position of-of-bounds
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    relay.close();
-    assert(!setStepperPos(TEST_STEPPER_POS_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    setStepperPos(TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(!incrementStepperPos());
-    setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT);
-    assert(!decrementStepperPos());
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    relay.close();
-    // success on setting position
-    assert(setStepperPos(TEST_STEPPER_POS_LOWER_LIMIT));
-    assert(stepperPos == TEST_STEPPER_POS_LOWER_LIMIT);
-    // success on incrementing position
-    setStepperPos(TEST_STEPPER_DEFAULT_POS);
-    assert(incrementStepperPos());
-    assert(stepperPos == TEST_STEPPER_DEFAULT_POS + STEP_INCREMENT_SIZE);
-    // success on decrementing position
-    setStepperPos(TEST_STEPPER_DEFAULT_POS);
-    assert(decrementStepperPos());
-    assert(stepperPos == TEST_STEPPER_DEFAULT_POS - STEP_INCREMENT_SIZE);
-
-    /* getStepperPosLowerLimit(), getStepperPosUpperLimit() */
-
-    uncalibrate();
-    assert(!getStepperPosLowerLimit(pos));
-    assert(!getStepperPosUpperLimit(pos));
-
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POS_LOWER_LIMIT,
-                                             TEST_STEPPER_DEFAULT_POS,
-                                             TEST_STEPPER_POS_UPPER_LIMIT);
-    assert(getStepperPosLowerLimit(pos));
-    assert(pos == TEST_STEPPER_POS_LOWER_LIMIT);
-    assert(getStepperPosUpperLimit(pos));
-    assert(pos == TEST_STEPPER_POS_UPPER_LIMIT);
-
-    /* setStepperPosLowerLimit(), setStepperPosUpperLimit() */
-
-    relay.close();
-    assert(!setStepperPosUpperLimit(TEST_STEPPER_DEFAULT_POS));
-    assert(!setStepperPosLowerLimit(TEST_STEPPER_DEFAULT_POS));
-
-    relay.open();
-    assert(setStepperPosUpperLimit(TEST_STEPPER_DEFAULT_POS));
-    assert(setStepperPosLowerLimit(TEST_STEPPER_DEFAULT_POS));
-}
-#endif  // TEST
 
