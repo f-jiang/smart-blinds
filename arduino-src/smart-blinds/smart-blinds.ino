@@ -107,11 +107,11 @@ bool isPosOutOfBounds(int pos) {
     if (!isStepperCalibrated()) {
         retval = true;
     } else if (((scaleType == NORMAL) &&
-                (stepperPosLowerLimit <= stepperPos) &&
-                (stepperPos <= stepperPosUpperLimit)) ||
+                (stepperPosLowerLimit <= pos) &&
+                (pos <= stepperPosUpperLimit)) ||
                ((scaleType == INVERTED) &&
-                (stepperPosUpperLimit <= stepperPos) &&
-                (stepperPos <= stepperPosLowerLimit))) {
+                (stepperPosUpperLimit <= pos) &&
+                (pos <= stepperPosLowerLimit))) {
         retval = false;
     } else {
         retval = true;
