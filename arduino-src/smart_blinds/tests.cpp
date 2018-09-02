@@ -3,7 +3,7 @@
 
 #include <assert.h>
 #include <Arduino.h>
-#include "smart-blinds.h"
+#include "smart_blinds.h"
 
 // TODO include arduino sketch header
 

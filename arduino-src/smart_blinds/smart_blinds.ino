@@ -1,6 +1,6 @@
 #define TEST_DEBUG
 
-#include "smart-blinds.h"
+#include "smart_blinds.h"
 
 #ifdef TEST_DEBUG
 #include "tests.h"
@@ -29,6 +29,8 @@ void setup()
     Serial.begin(9600);
 
     // TODO load position from eeprom
+    // - if values found in eeprom, load stepper pos and lims
+    // - if not then do nothing
 
     relay.begin();
     stepper.setSpeed(RPM);
