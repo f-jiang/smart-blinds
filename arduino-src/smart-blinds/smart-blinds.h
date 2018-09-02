@@ -6,8 +6,8 @@
 #include <Stepper.h>
 #include <Relay.h>
 
-#define STEP_INCREMENT_SIZE 1
-#define POSITION_UNDEFINED  (INT_MAX - 1)
+#define STEP_INCREMENT_SIZE         1
+#define STEPPER_POSITION_UNDEFINED  INT_MAX
 
 enum StepperPositionScaleType {
     NORMAL,

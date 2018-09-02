@@ -20,9 +20,9 @@
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
-int stepperPos = POSITION_UNDEFINED;
-int stepperPosLowerLimit = POSITION_UNDEFINED;
-int stepperPosUpperLimit = POSITION_UNDEFINED;
+int stepperPos = STEPPER_POSITION_UNDEFINED;
+int stepperPosLowerLimit = STEPPER_POSITION_UNDEFINED;
+int stepperPosUpperLimit = STEPPER_POSITION_UNDEFINED;
 
 void setup()
 {
@@ -63,9 +63,9 @@ StepperPositionScaleType getStepperPositionScaleType()
 
 bool isStepperCalibrated()
 {
-    return (stepperPos != POSITION_UNDEFINED) &&
-           (stepperPosLowerLimit != POSITION_UNDEFINED) &&
-           (stepperPosUpperLimit != POSITION_UNDEFINED);
+    return (stepperPos != STEPPER_POSITION_UNDEFINED) &&
+           (stepperPosLowerLimit != STEPPER_POSITION_UNDEFINED) &&
+           (stepperPosUpperLimit != STEPPER_POSITION_UNDEFINED);
 }
 
 bool isPosOutOfBounds(int pos)
