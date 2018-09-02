@@ -20,9 +20,9 @@
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
-int stepperPos = STEPPER_POSITION_UNDEFINED;
-int stepperPosLowerLimit = STEPPER_POSITION_UNDEFINED;
-int stepperPosUpperLimit = STEPPER_POSITION_UNDEFINED;
+int stepperPos = STEPPER_POSITION_DEFAULT;
+int stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
+int stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
 
 void setup()
 {
@@ -50,9 +50,7 @@ StepperPositionScaleType getStepperPositionScaleType()
 {
     StepperPositionScaleType retval;
 
-    if (!isStepperCalibrated()) {
-        retval = UNDEFINED;
-    } else if (stepperPosLowerLimit <= stepperPosUpperLimit) {
+    if (stepperPosLowerLimit <= stepperPosUpperLimit) {
         retval = NORMAL;
     } else {
         retval = INVERTED;
@@ -63,9 +61,9 @@ StepperPositionScaleType getStepperPositionScaleType()
 
 bool isStepperCalibrated()
 {
-    return (stepperPos != STEPPER_POSITION_UNDEFINED) &&
-           (stepperPosLowerLimit != STEPPER_POSITION_UNDEFINED) &&
-           (stepperPosUpperLimit != STEPPER_POSITION_UNDEFINED);
+    return (stepperPos != STEPPER_POSITION_DEFAULT) &&
+           (stepperPosLowerLimit != STEPPER_POSITION_LOWER_LIMIT_DEFAULT) &&
+           (stepperPosUpperLimit != STEPPER_POSITION_UPPER_LIMIT_DEFAULT);
 }
 
 bool isPosOutOfBounds(int pos)
@@ -73,14 +71,12 @@ bool isPosOutOfBounds(int pos)
     bool retval;
 
     StepperPositionScaleType scaleType = getStepperPositionScaleType();
-    if (!isStepperCalibrated()) {
-        retval = true;
-    } else if (((scaleType == NORMAL) &&
-                (stepperPosLowerLimit <= pos) &&
-                (pos <= stepperPosUpperLimit)) ||
-               ((scaleType == INVERTED) &&
-                (stepperPosUpperLimit <= pos) &&
-                (pos <= stepperPosLowerLimit))) {
+    if (((scaleType == NORMAL) &&
+         (stepperPosLowerLimit <= pos) &&
+         (pos <= stepperPosUpperLimit)) ||
+        ((scaleType == INVERTED) &&
+         (stepperPosUpperLimit <= pos) &&
+         (pos <= stepperPosLowerLimit))) {
         retval = false;
     } else {
         retval = true;
@@ -93,7 +89,7 @@ bool getStepperPos(int& pos)
 {
     bool success = false;
 
-    if (isStepperCalibrated()) {
+    if (true) { // TODO temp
         success = true;
         pos = stepperPos;
     }
@@ -105,7 +101,7 @@ bool setStepperPos(int pos)
 {
     bool success = false;
 
-    if (isStepperCalibrated() && relay.isClosed() && !isPosOutOfBounds(pos)) {
+    if (relay.isClosed() && !isPosOutOfBounds(pos)) {
         success = true;
 
         int stepValue;
@@ -139,8 +135,6 @@ bool incrementStepperPos()
         newPos = stepperPos + STEP_INCREMENT_SIZE;
     } else if (scaleType == INVERTED) {
         newPos = stepperPos - STEP_INCREMENT_SIZE;
-    } else {
-        success = false;
     }
 
     if (success) {
@@ -161,8 +155,6 @@ bool decrementStepperPos()
         newPos = stepperPos - STEP_INCREMENT_SIZE;
     } else if (scaleType == INVERTED) {
         newPos = stepperPos + STEP_INCREMENT_SIZE;
-    } else {
-        success = false;
     }
 
     if (success) {
@@ -176,7 +168,7 @@ bool getStepperPosLowerLimit(int& pos)
 {
     bool success = false;
 
-    if (isStepperCalibrated()) {
+    if (true) { // TODO temp
         success = true;
         pos = stepperPosLowerLimit;
     }
@@ -201,7 +193,7 @@ bool getStepperPosUpperLimit(int& pos)
 {
     bool success = false;
 
-    if (isStepperCalibrated()) {
+    if (true) { // TODO temp
         success = true;
         pos = stepperPosUpperLimit;
     }

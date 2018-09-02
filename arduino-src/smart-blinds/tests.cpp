@@ -37,9 +37,9 @@ static void __assert(const char *__func, const char *__file, int __lineno, const
 
 static void uncalibrate()
 {
-    stepperPos = STEPPER_POSITION_UNDEFINED;
-    stepperPosLowerLimit = STEPPER_POSITION_UNDEFINED;
-    stepperPosUpperLimit = STEPPER_POSITION_UNDEFINED;
+    stepperPos = STEPPER_POSITION_DEFAULT;
+    stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
+    stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
 }
 
 static void position_and_calibrate_with_normal_scale(int lo, int pos, int hi)
@@ -62,17 +62,11 @@ void test()
 
     /* test predefined position values */
     assert(STEP_INCREMENT_SIZE > 0);
-    assert(TEST_STEPPER_POSITION_LOWER_LIMIT != STEPPER_POSITION_UNDEFINED);
-    assert(TEST_STEPPER_POSITION_UPPER_LIMIT != STEPPER_POSITION_UNDEFINED);
-    assert(TEST_STEPPER_POSITION_DEFAULT != STEPPER_POSITION_UNDEFINED);
     assert(TEST_STEPPER_POSITION_LOWER_LIMIT != TEST_STEPPER_POSITION_UPPER_LIMIT);
-    assert(abs(TEST_STEPPER_POSITION_DEFAULT - TEST_STEPPER_POSITION_LOWER_LIMIT) >= STEP_INCREMENT_SIZE);
-    assert(abs(TEST_STEPPER_POSITION_UPPER_LIMIT - TEST_STEPPER_POSITION_DEFAULT) >= STEP_INCREMENT_SIZE);
+    assert(TEST_STEPPER_POSITION_DEFAULT - TEST_STEPPER_POSITION_LOWER_LIMIT >= STEP_INCREMENT_SIZE);
+    assert(TEST_STEPPER_POSITION_UPPER_LIMIT - TEST_STEPPER_POSITION_DEFAULT >= STEP_INCREMENT_SIZE);
 
     /* getStepperPositionScaleType() */
-
-    uncalibrate();
-    assert(getStepperPositionScaleType() == UNDEFINED);
 
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                              TEST_STEPPER_POSITION_DEFAULT,
@@ -101,9 +95,6 @@ void test()
 
     /* isPosOutOfBounds() */
 
-    uncalibrate();
-    assert(isPosOutOfBounds(TEST_STEPPER_POSITION_DEFAULT));
-
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                              TEST_STEPPER_POSITION_DEFAULT,
                                              TEST_STEPPER_POSITION_UPPER_LIMIT);
@@ -120,9 +111,6 @@ void test()
 
     /* getStepperPos() */
 
-    uncalibrate();
-    assert(!getStepperPos(pos));
-
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                              TEST_STEPPER_POSITION_DEFAULT,
                                              TEST_STEPPER_POSITION_UPPER_LIMIT);
@@ -130,13 +118,6 @@ void test()
     assert(pos == stepperPos);
 
     /* setStepperPos(), incrementStepperPos(), decrementStepperPos() */
-
-    // fail when uncalibrated
-    uncalibrate();
-    relay.close();
-    assert(!setStepperPos(TEST_STEPPER_POSITION_DEFAULT));
-    assert(!incrementStepperPos());
-    assert(!decrementStepperPos());
 
     // fail when stepper off (relay open)
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
@@ -147,7 +128,7 @@ void test()
     assert(!incrementStepperPos());
     assert(!decrementStepperPos());
 
-    // fail when calibrated, but position of-of-bounds
+    // fail when position of-of-bounds
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                              TEST_STEPPER_POSITION_DEFAULT,
                                              TEST_STEPPER_POSITION_UPPER_LIMIT);
@@ -175,10 +156,6 @@ void test()
     assert(stepperPos == TEST_STEPPER_POSITION_DEFAULT - STEP_INCREMENT_SIZE);
 
     /* getStepperPosLowerLimit(), getStepperPosUpperLimit() */
-
-    uncalibrate();
-    assert(!getStepperPosLowerLimit(pos));
-    assert(!getStepperPosUpperLimit(pos));
 
     position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                              TEST_STEPPER_POSITION_DEFAULT,

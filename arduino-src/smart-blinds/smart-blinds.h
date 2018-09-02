@@ -6,13 +6,14 @@
 #include <Stepper.h>
 #include <Relay.h>
 
-#define STEP_INCREMENT_SIZE         1
-#define STEPPER_POSITION_UNDEFINED  INT_MAX
+#define STEP_INCREMENT_SIZE                     1
+#define STEPPER_POSITION_DEFAULT                0
+#define STEPPER_POSITION_UPPER_LIMIT_DEFAULT    INT_MAX
+#define STEPPER_POSITION_LOWER_LIMIT_DEFAULT    INT_MIN
 
 enum StepperPositionScaleType {
     NORMAL,
-    INVERTED,
-    UNDEFINED
+    INVERTED
 };
 
 extern Stepper stepper;
