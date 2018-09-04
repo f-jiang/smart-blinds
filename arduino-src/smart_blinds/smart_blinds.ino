@@ -6,10 +6,10 @@
 #include "tests.h"
 #endif  // TEST_DEBUG
 
-#define STEPPER_A               8
-#define STEPPER_B               9
-#define STEPPER_C               10
-#define STEPPER_D               11
+#define STEPPER_A               2
+#define STEPPER_B               3
+#define STEPPER_C               4
+#define STEPPER_D               5
 #define RPM                     15
 #define STEP_ANGLE              1.8
 #define STEPS_PER_REVOLUTION    (360.0 / STEP_ANGLE)
