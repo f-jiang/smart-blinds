@@ -41,7 +41,8 @@ public:
     T& get(T& object) const
     {
         CircularQueueItem retrievedItem;
-        return EEPROM.get(m_curAddr, retrievedItem).value;
+        EEPROM.get(m_curAddr, retrievedItem);
+        return object;
     }
 
     T& put(T& object)
@@ -60,7 +61,9 @@ public:
         newItem.position = nextPos;
         newItem.value = object;
 
-        return EEPROM.put(nextAddr, newItem).value;
+        EEPROM.put(nextAddr, newItem);
+
+        return object;
     }
 
 private:
