@@ -2,16 +2,26 @@
 #include "tests.h"
 
 #include <assert.h>
+#include <stdint.h>
+
 #include <Arduino.h>
+
 #include "smart_blinds.h"
+#define private public
+#include "wear_leveled_eeprom_object.h"
+#undef private
 
-// TODO include arduino sketch header
-
-#define TEST_STEPPER_POSITION_LOWER_LIMIT    0
-#define TEST_STEPPER_POSITION_UPPER_LIMIT    100
-#define TEST_STEPPER_POSITION_DEFAULT        ((TEST_STEPPER_POSITION_LOWER_LIMIT +    \
-                                               TEST_STEPPER_POSITION_UPPER_LIMIT) /   \
-                                              2)
+#define TEST_STEPPER_POSITION_LOWER_LIMIT              0
+#define TEST_STEPPER_POSITION_UPPER_LIMIT              100
+#define TEST_STEPPER_POSITION_DEFAULT                  ((TEST_STEPPER_POSITION_LOWER_LIMIT +    \
+                                                         TEST_STEPPER_POSITION_UPPER_LIMIT) /   \
+                                                        2)
+#define TEST_EEPROM_START_ADDR                         0
+#define TEST_EEPROM_QUEUE_ITEM_COUNT                   3
+#define TEST_EEPROM_STORED_VALUE                       5
+#define TEST_TRUNCATED_EEPROM_START_ADDR               (EEPROM_SIZE_BYTES - 10)
+#define TEST_TRUNCATED_EEPROM_QUEUE_ITEM_COUNT         100
+#define TEST_TRUNCATED_EEPROM_ACTUAL_QUEUE_ITEM_COUNT  1
 
 static void __assert(const char *__func, const char *__file, int __lineno, const char *__sexp)
 {
@@ -56,7 +66,7 @@ static void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi)
     stepperPosUpperLimit = lo;
 }
 
-void test()
+static void test_smart_blinds()
 {
     int pos;
 
@@ -174,5 +184,78 @@ void test()
     relay.open();
     assert(setStepperPosUpperLimit(TEST_STEPPER_POSITION_DEFAULT));
     assert(setStepperPosLowerLimit(TEST_STEPPER_POSITION_DEFAULT));
+}
+
+static void test_wear_leveled_eeprom_object()
+{
+    int8_t value;
+    uint16_t addr;
+
+    /* test test macros */
+    assert((TEST_EEPROM_START_ADDR +
+            (TEST_EEPROM_QUEUE_ITEM_COUNT * sizeof(int8_t))) <
+           EEPROM_SIZE_BYTES);
+    assert(TEST_TRUNCATED_EEPROM_START_ADDR < EEPROM_SIZE_BYTES);
+    assert((TEST_TRUNCATED_EEPROM_START_ADDR +
+            (TEST_TRUNCATED_EEPROM_QUEUE_ITEM_COUNT * sizeof(int8_t))) >
+           EEPROM_SIZE_BYTES);
+    assert((TEST_TRUNCATED_EEPROM_START_ADDR +
+            (TEST_TRUNCATED_EEPROM_ACTUAL_QUEUE_ITEM_COUNT * sizeof(int8_t))) <
+           EEPROM_SIZE_BYTES);
+    assert((TEST_TRUNCATED_EEPROM_START_ADDR +
+            ((TEST_TRUNCATED_EEPROM_ACTUAL_QUEUE_ITEM_COUNT + 1) * sizeof(int8_t))) >
+           EEPROM_SIZE_BYTES);
+
+    WearLeveledEepromObject<int8_t> storage(TEST_EEPROM_START_ADDR,
+                                            TEST_EEPROM_QUEUE_ITEM_COUNT);
+    addr = storage.m_curAddr;
+
+    assert(storage.m_startAddr == TEST_EEPROM_START_ADDR);
+    assert(storage.m_endAddr == storage.m_startAddr +
+                                (TEST_EEPROM_QUEUE_ITEM_COUNT * sizeof(int8_t)));
+    assert(storage.m_circularQueueItemCount == TEST_EEPROM_QUEUE_ITEM_COUNT);
+    assert(storage.m_circularQueueItemSize ==
+           sizeof(WearLeveledEepromObject<int8_t>::CircularQueueItem));
+
+    /* value retrieval */
+    // will fail first time value gets stored
+    assert(storage.get(value) == TEST_EEPROM_STORED_VALUE);
+
+    /* value storage */
+    bool queueRollover;
+    bool regularStorageTested = false;
+    bool rolloverStorageTested = false;
+    for (int i = 0; i < TEST_EEPROM_QUEUE_ITEM_COUNT; i++) {
+        addr = storage.m_curAddr;
+        queueRollover = (storage.m_curAddr == storage.m_endAddr);
+        storage.put(value);
+        assert(storage.get(value) == TEST_EEPROM_STORED_VALUE);
+
+        if (queueRollover) {
+            assert(storage.m_curAddr == storage.m_startAddr);
+            rolloverStorageTested = true;
+        } else {
+            assert(storage.m_curAddr == (addr + storage.m_circularQueueItemSize));
+            regularStorageTested = true;
+        }
+
+        if (regularStorageTested && rolloverStorageTested) {
+            break;
+        }
+    }
+
+    /* circular queue truncation */
+    WearLeveledEepromObject<int8_t> truncatedStorage(TEST_TRUNCATED_EEPROM_START_ADDR,
+                                                     TEST_TRUNCATED_EEPROM_QUEUE_ITEM_COUNT);
+
+    assert(truncatedStorage.m_circularQueueItemCount ==
+           TEST_TRUNCATED_EEPROM_ACTUAL_QUEUE_ITEM_COUNT);
+    assert(truncatedStorage.m_endAddr < EEPROM_SIZE_BYTES);
+}
+
+void test()
+{
+    test_smart_blinds();
+    test_wear_leveled_eeprom_object();
 }
 
