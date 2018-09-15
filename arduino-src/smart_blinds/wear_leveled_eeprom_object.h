@@ -38,6 +38,8 @@ public:
         }
     }
 
+    WearLeveledEepromObject() = delete;
+
     T& get(T& object) const
     {
         CircularQueueItem retrievedItem;
