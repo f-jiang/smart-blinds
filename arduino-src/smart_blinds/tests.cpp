@@ -52,21 +52,21 @@ static void uncalibrate()
     stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
 }
 
-static void position_and_calibrate_with_normal_scale(int lo, int pos, int hi)
+static void positionAndCalibrateWithNormalScale(int lo, int pos, int hi)
 {
     stepperPos = pos;
     stepperPosLowerLimit = lo;
     stepperPosUpperLimit = hi;
 }
 
-static void position_and_calibrate_with_inverted_scale(int lo, int pos, int hi)
+static void positionAndCalibrateWithInvertedScale(int lo, int pos, int hi)
 {
     stepperPos = pos;
     stepperPosLowerLimit = hi;
     stepperPosUpperLimit = lo;
 }
 
-static void test_smart_blinds()
+static void testSmartBlinds()
 {
     int pos;
 
@@ -78,14 +78,14 @@ static void test_smart_blinds()
 
     /* getStepperPositionScaleType() */
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(getStepperPositionScaleType() == NORMAL);
 
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                               TEST_STEPPER_POSITION_DEFAULT,
-                                               TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithInvertedScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                          TEST_STEPPER_POSITION_DEFAULT,
+                                          TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(getStepperPositionScaleType() == INVERTED);
 
     /* isStepperCalibrated() */
@@ -93,55 +93,55 @@ static void test_smart_blinds()
     uncalibrate();
     assert(!isStepperCalibrated());
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(isStepperCalibrated());
 
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                               TEST_STEPPER_POSITION_DEFAULT,
-                                               TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithInvertedScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                          TEST_STEPPER_POSITION_DEFAULT,
+                                          TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(isStepperCalibrated());
 
     /* isPosOutOfBounds() */
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(!isPosOutOfBounds(TEST_STEPPER_POSITION_DEFAULT));
     assert(isPosOutOfBounds(TEST_STEPPER_POSITION_UPPER_LIMIT + STEP_INCREMENT_SIZE));
     assert(isPosOutOfBounds(TEST_STEPPER_POSITION_LOWER_LIMIT - STEP_INCREMENT_SIZE));
 
-    position_and_calibrate_with_inverted_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                               TEST_STEPPER_POSITION_DEFAULT,
-                                               TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithInvertedScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                          TEST_STEPPER_POSITION_DEFAULT,
+                                          TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(!isPosOutOfBounds(TEST_STEPPER_POSITION_DEFAULT));
     assert(isPosOutOfBounds(TEST_STEPPER_POSITION_UPPER_LIMIT + STEP_INCREMENT_SIZE));
     assert(isPosOutOfBounds(TEST_STEPPER_POSITION_LOWER_LIMIT - STEP_INCREMENT_SIZE));
 
     /* getStepperPos() */
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(getStepperPos(pos));
     assert(pos == stepperPos);
 
     /* setStepperPos(), incrementStepperPos(), decrementStepperPos() */
 
     // fail when stepper off (relay open)
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     relay.open();
     assert(!setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT));
     assert(!incrementStepperPos());
     assert(!decrementStepperPos());
 
     // fail when position of-of-bounds
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     relay.close();
     assert(!setStepperPos(TEST_STEPPER_POSITION_UPPER_LIMIT + STEP_INCREMENT_SIZE));
     setStepperPos(TEST_STEPPER_POSITION_UPPER_LIMIT);
@@ -149,9 +149,9 @@ static void test_smart_blinds()
     setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT);
     assert(!decrementStepperPos());
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     relay.close();
     // success on setting position
     assert(setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT));
@@ -167,9 +167,9 @@ static void test_smart_blinds()
 
     /* getStepperPosLowerLimit(), getStepperPosUpperLimit() */
 
-    position_and_calibrate_with_normal_scale(TEST_STEPPER_POSITION_LOWER_LIMIT,
-                                             TEST_STEPPER_POSITION_DEFAULT,
-                                             TEST_STEPPER_POSITION_UPPER_LIMIT);
+    positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
+                                        TEST_STEPPER_POSITION_DEFAULT,
+                                        TEST_STEPPER_POSITION_UPPER_LIMIT);
     assert(getStepperPosLowerLimit(pos));
     assert(pos == TEST_STEPPER_POSITION_LOWER_LIMIT);
     assert(getStepperPosUpperLimit(pos));
@@ -186,7 +186,7 @@ static void test_smart_blinds()
     assert(setStepperPosLowerLimit(TEST_STEPPER_POSITION_DEFAULT));
 }
 
-static void test_wear_leveled_eeprom_object()
+static void testWearLeveledEepromObject()
 {
     int8_t value;
     uint16_t addr;
@@ -255,7 +255,7 @@ static void test_wear_leveled_eeprom_object()
 
 void test()
 {
-    test_smart_blinds();
-    test_wear_leveled_eeprom_object();
+    testSmartBlinds();
+    testWearLeveledEepromObject();
 }
 
