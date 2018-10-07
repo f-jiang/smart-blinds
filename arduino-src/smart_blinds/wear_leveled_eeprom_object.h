@@ -3,10 +3,12 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include <EEPROM.h>
 
-#define EEPROM_SIZE_BYTES 1024  // TODO determine size based on board type
+#define EEPROM_SIZE_BYTES  1024  // TODO determine size based on board type
+#define POSITION_UNDEFINED UINT16_MAX
 
 template<class T>
 class WearLeveledEepromObject {
@@ -31,6 +33,14 @@ public:
             if (!CircularQueueItem::sequential(a, b)) {
                 m_curAddr = indexToAddress(i);
                 m_curItem = a;
+
+                if (m_curItem.position == POSITION_UNDEFINED) {
+                    memset(&m_curItem.value, 0, sizeof(T));
+                    m_curItem.position = 0;
+                    EEPROM.put(m_curAddr, m_curItem);
+                    Serial.println("initializing first circular queue item");
+                }
+
                 break;
             }
 
@@ -44,13 +54,14 @@ public:
     {
         CircularQueueItem retrievedItem;
         EEPROM.get(m_curAddr, retrievedItem);
+        object = retrievedItem.value;
         return object;
     }
 
     T& put(T& object)
     {
         uint16_t nextPos = m_curItem.position + 1;
-        if (nextPos == UINT16_MAX) {
+        if (nextPos == POSITION_UNDEFINED) {
             nextPos = 0;
         }
 
@@ -64,6 +75,8 @@ public:
         newItem.value = object;
 
         EEPROM.put(nextAddr, newItem);
+        m_curAddr = nextAddr;
+        m_curItem = newItem;
 
         return object;
     }
@@ -77,7 +90,7 @@ private:
         static bool sequential(const CircularQueueItem& a, const CircularQueueItem& b)
         {
             return ((b.position - a.position) == 1) ||
-                   ((a.position == (UINT16_MAX - 1)) && (a.position == 0));
+                   ((a.position == (POSITION_UNDEFINED - 1)) && (a.position == 0));
         }
     };
 
