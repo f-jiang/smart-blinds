@@ -20,6 +20,7 @@
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
+ace_button::AceButton btn(BUTTON_PIN);
 int stepperPos = STEPPER_POSITION_DEFAULT;
 int stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
 int stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
@@ -35,6 +36,9 @@ void setup()
     relay.begin();
     stepper.setSpeed(RPM);
 
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    btn.setEventHandler(handleBtnEvent);
+
     relay.open();
 
 #ifdef TEST_DEBUG
@@ -46,6 +50,20 @@ void setup()
 
 void loop()
 {
+#ifndef TEST_DEBUG
+    btn.check();
+#endif  // TEST_DEBUG
+}
+
+void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
+    switch (eventType) {
+    case ace_button::AceButton::kEventReleased:
+        setStepperPos((stepperPos == stepperPosLowerLimit) ?
+                      stepperPosUpperLimit : stepperPosLowerLimit);
+        break;
+    default:
+        break;
+    }
 }
 
 StepperPositionScaleType getStepperPositionScaleType()

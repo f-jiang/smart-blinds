@@ -2,9 +2,11 @@
 #define SMART_BLINDS
 
 #include <limits.h>
+#include <stdint.h>
 
 #include <Stepper.h>
 #include <Relay.h>
+#include <AceButton.h>
 
 #define STEP_INCREMENT_SIZE                     1
 #define STEPPER_POSITION_DEFAULT                0
@@ -18,10 +20,12 @@ enum StepperPositionScaleType {
 
 extern Stepper stepper;
 extern Relay relay;
+extern ace_button::AceButton btn;
 extern int stepperPos;
 extern int stepperPosLowerLimit;
 extern int stepperPosUpperLimit;
 
+void handleBtnEvent(ace_button::AceButton*, uint8_t, uint8_t);
 StepperPositionScaleType getStepperPositionScaleType();
 bool isStepperCalibrated();
 bool isPosOutOfBounds(int pos);
