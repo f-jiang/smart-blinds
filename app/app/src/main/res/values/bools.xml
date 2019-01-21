@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <bool name="pref_auto_open_default_value">false</bool>
-    <bool name="pref_auto_close_default_value">false</bool>
-</resources>
