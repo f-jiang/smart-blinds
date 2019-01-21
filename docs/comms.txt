@@ -1,0 +1,29 @@
+
+/*
+   - which wifi mode?
+       - sta mode
+           - connect to network - but how?
+           - write password into code
+           - get password from external storage medium
+           - wps connect
+           - once connected can control blinds thru wifi network and sending of data packets with basic info
+           - would be able to use any other device on network to control blinds, but pref phone with app
+           - would it be possible to control from other networks? would need communication between networks
+           - but then security becomes an issue
+           - how do i communicate between networks?
+       - ap mode
+           - phone connects to blinds - simpler and would work but then phone loses internet cxn
+           - things the blinds needs to do
+           - remember its current position
+           - remember its open and closed position
+           - move blinds stepper motor between open and closed positions
+           - switch stepper motor on and off using relay
+           - listen to commands via wifi
+
+   - calibration: reset open and closed positiosn
+   - move between open and close positions
+   - manual adjustment
+   - move position via buttons
+
+   - we want blinds to work without phone, so store all position data on blinds and make phone get position data from blinds each time rather than storing it itself
+ */
