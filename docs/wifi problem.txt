@@ -1,0 +1,40 @@
+- tried setting up esp8266 according to several tutorials; each one gave me the same result, which is no response from esp8266
+  - http://www.teomaragakis.com/hardware/electronics/how-to-connect-an-esp8266-to-an-arduino-uno/
+  - https://www.deviceplus.com/how-tos/arduino-guide/esp8266-setup-tutorial-using-arduino/
+ 
+- also tried talking to esp8266 directly via serial (uploaded blank sketch to arduino): get some junk data but no response of any sort
+
+- tried flashing firmware according to following tutorial:
+  - https://www.electronicshub.org/update-flash-esp8266-firmware/
+    - result: status FAIL or ERROR; also the DETECTED INFO section is blank and before failure the status is stuck at SYNC, even though serial port is detected
+    
+1/13/19:
+  - plugged new esp into perboard circuit; used 115200 baud, and was getting response from esp but garbled
+    - also the blue led was staying on for longer and longer each time
+  - then built deviceplus circuit on breadboard, got clear responses from esp at 9600 baud
+  - put same esp back into perfboard circuit but now using 9600 baud; now esp blue led always on and no longer getting responses
+    - this is how the second esp broke
+    - when reset esp will still output firmware info, same as second "broken" esp
+- ideas for what happened
+  - there is something wrong with my perfboard circuit: either incorrect schematics (didn't follow device plus circuit accurately) or poor layout of components, resulting in esp getting damaged
+  - the device plus circuit is flawed
+  - maybe esp is fixable
+  
+1/19/19:
+- with ftdi converter, boot message at 74880 baud, but no response from AT commands regardless of baud
+- another reason not working:
+  - maybe board is just bricked not broken -> try reflashing firmware using esptool.py according to this guide: https://bbs.espressif.com/viewtopic.php?t=4597#p15844
+    - step 1: set up python esptool:
+      - erase flash - done
+    - step 2: get and flash firmware
+    - worked
+    - commands to enter for reflashing for 8Mb flash:
+      esptool.py erase_flash
+      esptool.py --port <port> write_flash -fm qio 0x00000 boot_v1.7.bin
+      esptool.py --port <port> write_flash -fm qio 0x01000 user1.1024.new.2.bin
+      esptool.py --port <port> write_flash -fm qio 0xfc000 esp_init_data_default.bin
+      esptool.py --port <port> write_flash -fm qio 0x7e000 blank.bin
+- so true cause: AT+IPR=9600 bricks the board
+  - instead use AT+UART_DEF to change the baud rate
+  - For example 9600 baudrate / 8 data bits / 1 stop bits and none parity and flow control
+    AT+UART_DEF=9600,8,1,0,0
