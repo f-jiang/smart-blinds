@@ -2,6 +2,8 @@
 
 #include "smart_blinds.h"
 
+#include <SoftwareSerial.h>
+
 #ifdef TEST_DEBUG
 #include "tests.h"
 #endif  // TEST_DEBUG
@@ -18,9 +20,14 @@
 
 #define BUTTON_PIN              7
 
+#define ESP_RX                  8
+#define ESP_TX                  9
+
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
 ace_button::AceButton btn(BUTTON_PIN);
+SoftwareSerial esp(ESP_RX, ESP_TX);
+
 int stepperPos = STEPPER_POSITION_DEFAULT;
 int stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
 int stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
@@ -41,6 +48,13 @@ void setup()
 
     relay.open();
 
+    // TODO: esp checks
+    // TODO: wps support
+    esp.begin(9600);
+    esp.println("AT+CWMODE=1");
+    esp.println("AT+CWJAP=\"<ssid>\",\"<password>\"");
+    esp.println("AT+CIPMUX=0");
+
 #ifdef TEST_DEBUG
     Serial.println("Running tests...");
     test();
@@ -53,6 +67,38 @@ void loop()
 #ifndef TEST_DEBUG
     btn.check();
 #endif  // TEST_DEBUG
+
+    // TODO: esp checks
+
+    esp.println("AT+CIPSTART=\"TCP\",\"<url>\",<port no>");    // TODO: connect to app
+    // TODO: send req
+    esp.println("AT+CIPSEND=<req len>");
+    esp.println("GET /<path and query>");
+
+    if (esp.find("SEND OK")) {
+        char c;
+        String response;
+
+        while (esp.available() == 0);
+        // TODO: verify that the start of the response is of format +IPD,<res len>:
+        esp.readStringUntil(':');
+        while (esp.available() > 0) {
+            c = esp.read();
+            response += c;
+            delay(50);
+        }
+
+        // TODO: act based on response
+        /*
+         * if (response.compareTo("A")) {
+         *     do A
+         * } else if (response.compareTo("B")) {
+         *     do B
+         * } else {
+         *     error
+         * }
+         */
+    }
 }
 
 void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
