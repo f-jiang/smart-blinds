@@ -80,17 +80,9 @@ void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_
     }
 }
 
-StepperPositionScaleType getStepperPositionScaleType()
+bool isPosInverted()
 {
-    StepperPositionScaleType retval;
-
-    if (stepperPosLowerLimit <= stepperPosUpperLimit) {
-        retval = NORMAL;
-    } else {
-        retval = INVERTED;
-    }
-
-    return retval;
+    return stepperPosUpperLimit > stepperPosLowerLimit;
 }
 
 bool isStepperCalibrated()
@@ -104,11 +96,11 @@ bool isPosOutOfBounds(int pos)
 {
     bool retval;
 
-    StepperPositionScaleType scaleType = getStepperPositionScaleType();
-    if (((scaleType == NORMAL) &&
+    bool inverted = isPosInverted();
+    if ((!inverted &&
          (stepperPosLowerLimit <= pos) &&
          (pos <= stepperPosUpperLimit)) ||
-        ((scaleType == INVERTED) &&
+        (inverted &&
          (stepperPosUpperLimit <= pos) &&
          (pos <= stepperPosLowerLimit))) {
         retval = false;
@@ -139,15 +131,14 @@ bool setStepperPos(int pos)
         success = true;
 
         int stepValue;
-        StepperPositionScaleType scaleType = getStepperPositionScaleType();
 
-        if (scaleType == NORMAL) {
-            stepValue = pos - stepperPos;
-        } else if (scaleType == INVERTED) {
+        if (isPosInverted()) {
             stepValue = stepperPos - pos;
         } else {
+            stepValue = pos - stepperPos;
+        } /* else {
             success = false;
-        }
+        } */
 
         if (success) {
             stepper.step(stepValue);
@@ -163,12 +154,11 @@ bool incrementStepperPos()
     bool success = true;
 
     int newPos;
-    StepperPositionScaleType scaleType = getStepperPositionScaleType();
 
-    if (scaleType == NORMAL) {
-        newPos = stepperPos + STEP_INCREMENT_SIZE;
-    } else if (scaleType == INVERTED) {
+    if (isPosInverted()) {
         newPos = stepperPos - STEP_INCREMENT_SIZE;
+    } else {
+        newPos = stepperPos + STEP_INCREMENT_SIZE;
     }
 
     if (success) {
@@ -183,12 +173,11 @@ bool decrementStepperPos()
     bool success = true;
 
     int newPos;
-    StepperPositionScaleType scaleType = getStepperPositionScaleType();
 
-    if (scaleType == NORMAL) {
-        newPos = stepperPos - STEP_INCREMENT_SIZE;
-    } else if (scaleType == INVERTED) {
+    if (isPosInverted()) {
         newPos = stepperPos + STEP_INCREMENT_SIZE;
+    } else {
+        newPos = stepperPos - STEP_INCREMENT_SIZE;
     }
 
     if (success) {

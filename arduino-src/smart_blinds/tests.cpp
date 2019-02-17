@@ -76,17 +76,17 @@ static void testSmartBlinds()
     assert(TEST_STEPPER_POSITION_DEFAULT - TEST_STEPPER_POSITION_LOWER_LIMIT >= STEP_INCREMENT_SIZE);
     assert(TEST_STEPPER_POSITION_UPPER_LIMIT - TEST_STEPPER_POSITION_DEFAULT >= STEP_INCREMENT_SIZE);
 
-    /* getStepperPositionScaleType() */
+    /* isPosInverted() */
 
     positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                         TEST_STEPPER_POSITION_DEFAULT,
                                         TEST_STEPPER_POSITION_UPPER_LIMIT);
-    assert(getStepperPositionScaleType() == NORMAL);
+    assert(!isPosInverted());
 
     positionAndCalibrateWithInvertedScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                           TEST_STEPPER_POSITION_DEFAULT,
                                           TEST_STEPPER_POSITION_UPPER_LIMIT);
-    assert(getStepperPositionScaleType() == INVERTED);
+    assert(isPosInverted());
 
     /* isStepperCalibrated() */
 
