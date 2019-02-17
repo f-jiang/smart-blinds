@@ -51,9 +51,6 @@ void setup()
     // TODO: esp checks
     // TODO: wps support
     esp.begin(9600);
-    esp.println("AT+CWMODE=1");
-    esp.println("AT+CWJAP=\"<ssid>\",\"<password>\"");
-    esp.println("AT+CIPMUX=0");
 
 #ifdef TEST_DEBUG
     Serial.println("Running tests...");
@@ -70,35 +67,6 @@ void loop()
 
     // TODO: esp checks
 
-    esp.println("AT+CIPSTART=\"TCP\",\"<url>\",<port no>");    // TODO: connect to app
-    // TODO: send req
-    esp.println("AT+CIPSEND=<req len>");
-    esp.println("GET /<path and query>");
-
-    if (esp.find("SEND OK")) {
-        char c;
-        String response;
-
-        while (esp.available() == 0);
-        // TODO: verify that the start of the response is of format +IPD,<res len>:
-        esp.readStringUntil(':');
-        while (esp.available() > 0) {
-            c = esp.read();
-            response += c;
-            delay(50);
-        }
-
-        // TODO: act based on response
-        /*
-         * if (response.compareTo("A")) {
-         *     do A
-         * } else if (response.compareTo("B")) {
-         *     do B
-         * } else {
-         *     error
-         * }
-         */
-    }
 }
 
 void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
