@@ -149,44 +149,6 @@ bool setStepperPos(int pos)
     return success;
 }
 
-bool incrementStepperPos()
-{
-    bool success = true;
-
-    int newPos;
-
-    if (isPosInverted()) {
-        newPos = stepperPos - STEP_INCREMENT_SIZE;
-    } else {
-        newPos = stepperPos + STEP_INCREMENT_SIZE;
-    }
-
-    if (success) {
-        success = setStepperPos(newPos);
-    }
-
-    return success;
-}
-
-bool decrementStepperPos()
-{
-    bool success = true;
-
-    int newPos;
-
-    if (isPosInverted()) {
-        newPos = stepperPos + STEP_INCREMENT_SIZE;
-    } else {
-        newPos = stepperPos - STEP_INCREMENT_SIZE;
-    }
-
-    if (success) {
-        success = setStepperPos(newPos);
-    }
-
-    return success;
-}
-
 bool getStepperPosLowerLimit(int& pos)
 {
     bool success = false;

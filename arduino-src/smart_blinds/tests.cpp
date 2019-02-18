@@ -127,7 +127,7 @@ static void testSmartBlinds()
     assert(getStepperPos(pos));
     assert(pos == stepperPos);
 
-    /* setStepperPos(), incrementStepperPos(), decrementStepperPos() */
+    /* setStepperPos() */
 
     // fail when stepper off (relay open)
     positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
@@ -135,8 +135,6 @@ static void testSmartBlinds()
                                         TEST_STEPPER_POSITION_UPPER_LIMIT);
     relay.open();
     assert(!setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT));
-    assert(!incrementStepperPos());
-    assert(!decrementStepperPos());
 
     // fail when position of-of-bounds
     positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
@@ -144,10 +142,6 @@ static void testSmartBlinds()
                                         TEST_STEPPER_POSITION_UPPER_LIMIT);
     relay.close();
     assert(!setStepperPos(TEST_STEPPER_POSITION_UPPER_LIMIT + STEP_INCREMENT_SIZE));
-    setStepperPos(TEST_STEPPER_POSITION_UPPER_LIMIT);
-    assert(!incrementStepperPos());
-    setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT);
-    assert(!decrementStepperPos());
 
     positionAndCalibrateWithNormalScale(TEST_STEPPER_POSITION_LOWER_LIMIT,
                                         TEST_STEPPER_POSITION_DEFAULT,
@@ -156,14 +150,6 @@ static void testSmartBlinds()
     // success on setting position
     assert(setStepperPos(TEST_STEPPER_POSITION_LOWER_LIMIT));
     assert(stepperPos == TEST_STEPPER_POSITION_LOWER_LIMIT);
-    // success on incrementing position
-    setStepperPos(TEST_STEPPER_POSITION_DEFAULT);
-    assert(incrementStepperPos());
-    assert(stepperPos == TEST_STEPPER_POSITION_DEFAULT + STEP_INCREMENT_SIZE);
-    // success on decrementing position
-    setStepperPos(TEST_STEPPER_POSITION_DEFAULT);
-    assert(decrementStepperPos());
-    assert(stepperPos == TEST_STEPPER_POSITION_DEFAULT - STEP_INCREMENT_SIZE);
 
     /* getStepperPosLowerLimit(), getStepperPosUpperLimit() */
 
