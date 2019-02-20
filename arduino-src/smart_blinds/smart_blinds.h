@@ -18,9 +18,6 @@ typedef int16_t stepper_pos_t;
 extern Stepper stepper;
 extern Relay relay;
 extern ace_button::AceButton btn;
-extern stepper_pos_t stepperPos;
-extern stepper_pos_t stepperPosLowerLimit;
-extern stepper_pos_t stepperPosUpperLimit;
 
 void handleBtnEvent(ace_button::AceButton*, uint8_t, uint8_t);
 bool isPosInverted();

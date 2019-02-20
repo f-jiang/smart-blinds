@@ -23,6 +23,10 @@
 #define TEST_TRUNCATED_EEPROM_QUEUE_ITEM_COUNT         100
 #define TEST_TRUNCATED_EEPROM_ACTUAL_QUEUE_ITEM_COUNT  1
 
+static stepper_pos_t stepperPos;
+static stepper_pos_t stepperPosLowerLimit;
+static stepper_pos_t stepperPosUpperLimit;
+
 static void __assert(const char *__func, const char *__file, int __lineno, const char *__sexp)
 {
     Serial.print("Assertion failed: (");

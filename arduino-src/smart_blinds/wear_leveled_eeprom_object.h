@@ -14,6 +14,10 @@ template<class T>
 class WearLeveledEepromObject {
 public:
 
+    static size_t circularQueueItemSize() {
+        return sizeof(CircularQueueItem);
+    }
+
     WearLeveledEepromObject(uint16_t startAddr, size_t circularQueueItemCount) :
         m_startAddr(startAddr),
         m_circularQueueItemCount(circularQueueItemCount),

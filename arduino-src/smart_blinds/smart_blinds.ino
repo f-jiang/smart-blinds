@@ -3,10 +3,10 @@
 #include "smart_blinds.h"
 
 #include <SoftwareSerial.h>
-
 #ifdef TEST_DEBUG
 #include "tests.h"
 #endif  // TEST_DEBUG
+#include "wear_leveled_eeprom_object.h"
 
 #define STEPPER_A               2
 #define STEPPER_B               3
@@ -28,17 +28,28 @@ Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
 ace_button::AceButton btn(BUTTON_PIN);
 SoftwareSerial esp(ESP_RX, ESP_TX);
 
-stepper_pos_t stepperPos = STEPPER_POSITION_DEFAULT;
-stepper_pos_t stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
-stepper_pos_t stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
+size_t circularQueueItemCount = EEPROM_SIZE_BYTES /
+                                (3 * WearLeveledEepromObject<stepper_pos_t>::circularQueueItemSize());
+WearLeveledEepromObject<stepper_pos_t> stepperPos(0, circularQueueItemCount);
+WearLeveledEepromObject<stepper_pos_t> stepperPosLowerLimit(EEPROM_SIZE_BYTES / 3, circularQueueItemCount);
+WearLeveledEepromObject<stepper_pos_t> stepperPosUpperLimit(2 * EEPROM_SIZE_BYTES / 3, circularQueueItemCount);
+stepper_pos_t eepromValue;
 
 void setup()
 {
     Serial.begin(9600);
 
-    // TODO load position from eeprom
-    // - if values found in eeprom, load stepper pos and lims
-    // - if not then do nothing
+    if (stepperPos.get(eepromValue) == 0xFFFF &&
+        stepperPosLowerLimit.get(eepromValue) == 0xFFFF &&
+        stepperPosUpperLimit.get(eepromValue) == 0xFFFF)
+    {
+        eepromValue = STEPPER_POSITION_DEFAULT;
+        stepperPos.put(eepromValue);
+        eepromValue = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
+        stepperPosLowerLimit.put(eepromValue);
+        eepromValue = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
+        stepperPosUpperLimit.put(eepromValue);
+    }
 
     relay.begin();
     stepper.setSpeed(RPM);
@@ -72,9 +83,16 @@ void loop()
 void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
     switch (eventType) {
     case ace_button::AceButton::kEventReleased:
-        setStepperPos((stepperPos == stepperPosLowerLimit) ?
-                      stepperPosUpperLimit : stepperPosLowerLimit);
+    {
+        stepper_pos_t pos, lowerLimit;
+        stepperPos.get(pos);
+        stepperPos.get(lowerLimit);
+
+        setStepperPos((pos == lowerLimit) ?
+                      stepperPosUpperLimit.get(eepromValue) : stepperPosLowerLimit.get(eepromValue));
+        // TODO report new pos using getStepperPos and esp.write
         break;
+    }
     default:
         break;
     }
@@ -82,14 +100,14 @@ void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_
 
 bool isPosInverted()
 {
-    return stepperPosUpperLimit > stepperPosLowerLimit;
+    return stepperPosUpperLimit.get(eepromValue) < stepperPosLowerLimit.get(eepromValue);
 }
 
 bool isStepperCalibrated()
 {
-    return (stepperPos != STEPPER_POSITION_DEFAULT) &&
-           (stepperPosLowerLimit != STEPPER_POSITION_LOWER_LIMIT_DEFAULT) &&
-           (stepperPosUpperLimit != STEPPER_POSITION_UPPER_LIMIT_DEFAULT);
+    return (stepperPos.get(eepromValue) != STEPPER_POSITION_DEFAULT) &&
+           (stepperPosLowerLimit.get(eepromValue) != STEPPER_POSITION_LOWER_LIMIT_DEFAULT) &&
+           (stepperPosUpperLimit.get(eepromValue) != STEPPER_POSITION_UPPER_LIMIT_DEFAULT);
 }
 
 bool isPosOutOfBounds(stepper_pos_t pos)
@@ -98,11 +116,11 @@ bool isPosOutOfBounds(stepper_pos_t pos)
 
     bool inverted = isPosInverted();
     if ((!inverted &&
-         (stepperPosLowerLimit <= pos) &&
-         (pos <= stepperPosUpperLimit)) ||
+         (stepperPosLowerLimit.get(eepromValue) <= pos) &&
+         (pos <= stepperPosUpperLimit.get(eepromValue))) ||
         (inverted &&
-         (stepperPosUpperLimit <= pos) &&
-         (pos <= stepperPosLowerLimit))) {
+         (stepperPosUpperLimit.get(eepromValue) <= pos) &&
+         (pos <= stepperPosLowerLimit.get(eepromValue)))) {
         retval = false;
     } else {
         retval = true;
@@ -117,7 +135,7 @@ bool getStepperPos(stepper_pos_t& pos)
 
     if (true) { // TODO temp
         success = true;
-        pos = stepperPos;
+        stepperPos.get(pos);
     }
 
     return success;
@@ -133,16 +151,16 @@ bool setStepperPos(stepper_pos_t pos)
         stepper_pos_t stepValue;
 
         if (isPosInverted()) {
-            stepValue = stepperPos - pos;
+            stepValue = stepperPos.get(eepromValue) - pos;
         } else {
-            stepValue = pos - stepperPos;
+            stepValue = pos - stepperPos.get(eepromValue);
         } /* else {
             success = false;
         } */
 
         if (success) {
             stepper.step(stepValue);
-            stepperPos = pos;
+            stepperPos.get(pos);
         }
     }
 
@@ -155,7 +173,7 @@ bool getStepperPosLowerLimit(stepper_pos_t& pos)
 
     if (true) { // TODO temp
         success = true;
-        pos = stepperPosLowerLimit;
+        stepperPosLowerLimit.get(pos);
     }
 
     return success;
@@ -168,7 +186,7 @@ bool setStepperPosLowerLimit(stepper_pos_t pos)
 
     if (!relay.isClosed()) {
         success = true;
-        stepperPosLowerLimit = pos;
+        stepperPosLowerLimit.put(pos);
     }
 
     return success;
@@ -180,7 +198,7 @@ bool getStepperPosUpperLimit(stepper_pos_t& pos)
 
     if (true) { // TODO temp
         success = true;
-        pos = stepperPosUpperLimit;
+        stepperPosUpperLimit.get(pos);
     }
 
     return success;
@@ -193,7 +211,7 @@ bool setStepperPosUpperLimit(stepper_pos_t pos)
 
     if (!relay.isClosed()) {
         success = true;
-        stepperPosUpperLimit = pos;
+        stepperPosUpperLimit.put(pos);
     }
 
     return success;
