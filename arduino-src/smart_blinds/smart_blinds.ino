@@ -133,21 +133,31 @@ void loop()
 #endif  // TEST_DEBUG
 }
 
-void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
+void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/)
+{
     switch (eventType) {
-    case ace_button::AceButton::kEventReleased:
-    {
-        stepper_pos_t pos, lowerLimit;
-        stepperPos.get(pos);
-        stepperPos.get(lowerLimit);
+        case ace_button::AceButton::kEventReleased:
+        {
+            stepper_pos_t pos, lowerLimit;
+            stepperPos.get(pos);
+            stepperPos.get(lowerLimit);
 
-        setStepperPos((pos == lowerLimit) ?
-                      stepperPosUpperLimit.get(eepromValue) : stepperPosLowerLimit.get(eepromValue));
-        // TODO report new pos using getStepperPos and esp.write
-        break;
-    }
-    default:
-        break;
+            relay.close();
+            setStepperPos((pos == lowerLimit) ?
+                          stepperPosUpperLimit.get(eepromValue) : stepperPosLowerLimit.get(eepromValue));
+            relay.open();
+
+            stepper_pos_t new_value;
+            char buf[STR_BUF_LEN];
+            getStepperPos(new_value);
+            sprintf(buf, "%d", new_value);
+            esp.write(COMMAND_TILT);
+            esp.write(buf);
+
+            break;
+        }
+        default:
+            break;
     }
 }
 
