@@ -28,9 +28,9 @@ Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
 ace_button::AceButton btn(BUTTON_PIN);
 SoftwareSerial esp(ESP_RX, ESP_TX);
 
-int stepperPos = STEPPER_POSITION_DEFAULT;
-int stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
-int stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
+stepper_pos_t stepperPos = STEPPER_POSITION_DEFAULT;
+stepper_pos_t stepperPosLowerLimit = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
+stepper_pos_t stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
 
 void setup()
 {
@@ -92,7 +92,7 @@ bool isStepperCalibrated()
            (stepperPosUpperLimit != STEPPER_POSITION_UPPER_LIMIT_DEFAULT);
 }
 
-bool isPosOutOfBounds(int pos)
+bool isPosOutOfBounds(stepper_pos_t pos)
 {
     bool retval;
 
@@ -111,7 +111,7 @@ bool isPosOutOfBounds(int pos)
     return retval;
 }
 
-bool getStepperPos(int& pos)
+bool getStepperPos(stepper_pos_t& pos)
 {
     bool success = false;
 
@@ -123,14 +123,14 @@ bool getStepperPos(int& pos)
     return success;
 }
 
-bool setStepperPos(int pos)
+bool setStepperPos(stepper_pos_t pos)
 {
     bool success = false;
 
     if (relay.isClosed() && !isPosOutOfBounds(pos)) {
         success = true;
 
-        int stepValue;
+        stepper_pos_t stepValue;
 
         if (isPosInverted()) {
             stepValue = stepperPos - pos;
@@ -149,7 +149,7 @@ bool setStepperPos(int pos)
     return success;
 }
 
-bool getStepperPosLowerLimit(int& pos)
+bool getStepperPosLowerLimit(stepper_pos_t& pos)
 {
     bool success = false;
 
@@ -162,7 +162,7 @@ bool getStepperPosLowerLimit(int& pos)
 }
 
 // TODO enforce lower != upper?
-bool setStepperPosLowerLimit(int pos)
+bool setStepperPosLowerLimit(stepper_pos_t pos)
 {
     bool success = false;
 
@@ -174,7 +174,7 @@ bool setStepperPosLowerLimit(int pos)
     return success;
 }
 
-bool getStepperPosUpperLimit(int& pos)
+bool getStepperPosUpperLimit(stepper_pos_t& pos)
 {
     bool success = false;
 
@@ -187,7 +187,7 @@ bool getStepperPosUpperLimit(int& pos)
 }
 
 // TODO enforce lower != upper?
-bool setStepperPosUpperLimit(int pos)
+bool setStepperPosUpperLimit(stepper_pos_t pos)
 {
     bool success = false;
 

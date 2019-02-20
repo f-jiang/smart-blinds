@@ -10,28 +10,30 @@
 
 #define STEP_INCREMENT_SIZE                     1
 #define STEPPER_POSITION_DEFAULT                0
-#define STEPPER_POSITION_UPPER_LIMIT_DEFAULT    INT_MAX
-#define STEPPER_POSITION_LOWER_LIMIT_DEFAULT    INT_MIN
+#define STEPPER_POSITION_UPPER_LIMIT_DEFAULT    INT16_MAX
+#define STEPPER_POSITION_LOWER_LIMIT_DEFAULT    INT16_MIN
+
+typedef int16_t stepper_pos_t;
 
 extern Stepper stepper;
 extern Relay relay;
 extern ace_button::AceButton btn;
-extern int stepperPos;
-extern int stepperPosLowerLimit;
-extern int stepperPosUpperLimit;
+extern stepper_pos_t stepperPos;
+extern stepper_pos_t stepperPosLowerLimit;
+extern stepper_pos_t stepperPosUpperLimit;
 
 void handleBtnEvent(ace_button::AceButton*, uint8_t, uint8_t);
 bool isPosInverted();
 bool isStepperCalibrated();
-bool isPosOutOfBounds(int pos);
-bool getStepperPos(int& pos);
-bool setStepperPos(int pos);
+bool isPosOutOfBounds(stepper_pos_t pos);
+bool getStepperPos(stepper_pos_t& pos);
+bool setStepperPos(stepper_pos_t pos);
 bool incrementStepperPos();
 bool decrementStepperPos();
-bool getStepperPosLowerLimit(int& pos);
-bool setStepperPosLowerLimit(int pos);
-bool getStepperPosUpperLimit(int& pos);
-bool setStepperPosUpperLimit(int pos);
+bool getStepperPosLowerLimit(stepper_pos_t& pos);
+bool setStepperPosLowerLimit(stepper_pos_t pos);
+bool getStepperPosUpperLimit(stepper_pos_t& pos);
+bool setStepperPosUpperLimit(stepper_pos_t pos);
 
 #endif  // SMART_BLINDS
 

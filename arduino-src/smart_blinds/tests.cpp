@@ -52,14 +52,18 @@ static void uncalibrate()
     stepperPosUpperLimit = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
 }
 
-static void positionAndCalibrateWithNormalScale(int lo, int pos, int hi)
+static void positionAndCalibrateWithNormalScale(stepper_pos_t lo,
+                                                stepper_pos_t pos,
+                                                stepper_pos_t hi)
 {
     stepperPos = pos;
     stepperPosLowerLimit = lo;
     stepperPosUpperLimit = hi;
 }
 
-static void positionAndCalibrateWithInvertedScale(int lo, int pos, int hi)
+static void positionAndCalibrateWithInvertedScale(stepper_pos_t lo,
+                                                  stepper_pos_t pos,
+                                                  stepper_pos_t hi)
 {
     stepperPos = pos;
     stepperPosLowerLimit = hi;
@@ -68,7 +72,7 @@ static void positionAndCalibrateWithInvertedScale(int lo, int pos, int hi)
 
 static void testSmartBlinds()
 {
-    int pos;
+    stepper_pos_t pos;
 
     /* test predefined position values */
     assert(STEP_INCREMENT_SIZE > 0);
