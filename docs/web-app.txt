@@ -1,0 +1,3 @@
+- components:
+  - frontend: react
+  - [later]: google cloud mqtt or firebase cloud functions or google cloud pub sub

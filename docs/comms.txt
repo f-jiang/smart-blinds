@@ -27,3 +27,106 @@
 
    - we want blinds to work without phone, so store all position data on blinds and make phone get position data from blinds each time rather than storing it itself
  */
+
+1/20/19:
+- web app as "backbone"; blinds connects to web app's server
+- connect blinds to network thru wps; will need to read into esp8266 wps
+
+1/26/19:
+- app to blinds
+  - calibration: upper and lower limits
+  - set position
+  - increment and decrement position
+- blinds to app
+  - blinds position
+
+2/1/19:
+for saturday:
+- firebase needs:
+  - obtain and store (persist) information about blinds such as position (probably real-time databse or firestore)
+    - send commands to blinds to make them open and close on scheduled times
+        - current idea: cron job type thing to send messages to blinds at scheduled tmie
+            - do blinds need to be consatntling listening, i.e. GETting data from endpoint?
+              - use of cloud finctions: what do blinds need to GET from web app? just open close commmands if GET even needed for that
+
+2/2/19:
+from app to blinds (and maybe back):
+- movement:
+  - increment position
+  - decrement position
+  - set position
+- calibration:
+  - set upper limit
+  - set lower limit
+- scheduling:
+  - moving blinds at scheduled time
+- querying:
+  - blinds current position
+  - is calibrated
+  - getting limits
+
+from blinds to app:
+- when pressing button on blinds, report new pos to app
+  - or have blinds get pos each time it needs to do something
+
+next step:
+- send info to blinds (i.e. send info to esp)
+- have blinds send info to another address
+
+esp 8266 cxn methods:
+- esp as AP -> no
+- esp as client
+  - esp8266wifi -> requires code to run on esp, but also allows to receive requests without having to listen first
+  - esp8266webserver -> library built on top of esp8266 wifi with higher level convenience
+  - maybe AT+CIPMUX=1 then AT+CIPSERVER=1 (TCP server)
+- using blynk app
+
+- connecting to internet (i.e. other networks) -> port forwarding? https://maker.pro/esp8266/tutorial/esp8266-tutorial-how-to-control-anything-from-the-internet
+
+- look into AT commands tcp server as this could be an alternative to GET and wait
+
+- after asking online and watching some youtube videos:
+  - out of my two original ideas (polling vs web server) polling sounds like a better option because youtube video for esp server port forwarding says that need to make router ip permanently static and download noipi tool
+  - mqtt -> all libs run on either esp only or require arduino with a wifi shield
+  - home automation platforms -> not now as i don't currently have the means to get into home automation (for future reference, look for platforms like Home Assistant and others)
+
+- comms boils down to two options:
+  - http polling with firebase cloud functions and some sort of cron job thing
+  - code running on both arduino and esp8266; this would open up many more possibilities
+    - mqtt client running on esp, talking to arduino via serial
+       - more efficient than http long polling (lower bandwidth and power consumption), but harder: need code running on both arduino and esp, need the two to talk to each other via serial, need a paho client library running on web backend
+          - _maybe_ as a future improvement
+
+2/10/19:
+- so firebase cron doesn't work because
+  - jobs are repeating
+  - to modify job time need to change a config file
+- reconsidering:
+  - either find another firebase "notification" method
+  - Home Assistant API
+    - will need custom
+       - component
+       - maybe platform
+       - maybe entity class
+    - might no longer need firebase and react
+    - also will need rpi server
+
+2/16/19:
+- using home assistant
+  - rpi server setup: https://randomnerdtutorials.com/getting-started-with-home-assistant-on-raspberry-pi/
+- covers component: https://www.home-assistant.io/components/cover/
+- mqtt covers platform: https://www.home-assistant.io/components/cover.mqtt/
+  - would need to program the esp 8266 to run an mqtt client and communicate with the arduino over serial
+- command line covers platform: https://www.home-assistant.io/components/cover.command_line/
+  - could use http polling here
+    - use curl or something to talk with the esp
+- ha mqtt broker: https://www.home-assistant.io/docs/mqtt/broker
+
+- use mqtt because better and have a clearer idea of what needs to be done
+- steps:
+  + set up home assistant on rpi - or could save time and just run on computer for "testing" purposes
+    + mqtt broker setup: https://www.home-assistant.io/components/mqtt/
+    + figure out blinds mqtt interface and config
+  + esp-arduino serial communication - is this doable?
+    - yes now write an interface
+  - mqtt client on esp8266
