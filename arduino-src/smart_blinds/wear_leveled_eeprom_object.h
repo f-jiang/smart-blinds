@@ -39,7 +39,7 @@ public:
                 m_curItem = a;
 
                 if (m_curItem.position == POSITION_UNDEFINED) {
-                    memset(&m_curItem.value, 0, sizeof(T));
+                    memset(&m_curItem.value, 0xFF, sizeof(T));
                     m_curItem.position = 0;
                     EEPROM.put(m_curAddr, m_curItem);
                     Serial.println("initializing first circular queue item");
