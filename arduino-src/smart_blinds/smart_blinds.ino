@@ -70,7 +70,7 @@ void setup()
         stepper_pos_t pos, lower_limit, upper_limit;
         stepperPos.get(pos);
         stepperPosLowerLimit.get(lower_limit);
-        stepperPosLowerLimit.get(upper_limit);
+        stepperPosUpperLimit.get(upper_limit);
 
         Serial.print("found following in storage: position ");
         Serial.print(pos);
