@@ -8,20 +8,23 @@
 #endif  // TEST_DEBUG
 #include "wear_leveled_eeprom_object.h"
 
-#define STEPPER_A               2
-#define STEPPER_B               3
-#define STEPPER_C               4
-#define STEPPER_D               5
-#define RPM                     15
-#define STEP_ANGLE              1.8
-#define STEPS_PER_REVOLUTION    (360.0 / STEP_ANGLE)
+#define SERIAL_BAUD_RATE            9600
+#define SOFTWARE_SERIAL_BAUD_RATE   9600
 
-#define RELAY_PIN               6
+#define STEPPER_A                   2
+#define STEPPER_B                   3
+#define STEPPER_C                   4
+#define STEPPER_D                   5
+#define RPM                         15
+#define STEP_ANGLE                  1.8
+#define STEPS_PER_REVOLUTION        (360.0 / STEP_ANGLE)
 
-#define BUTTON_PIN              7
+#define RELAY_PIN                   6
 
-#define ESP_RX                  8
-#define ESP_TX                  9
+#define BUTTON_PIN                  7
+
+#define ESP_RX                      8
+#define ESP_TX                      9
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
@@ -37,7 +40,7 @@ stepper_pos_t eepromValue;
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(SERIAL_BAUD_RATE);
 
     if (stepperPos.get(eepromValue) == 0xFFFF &&
         stepperPosLowerLimit.get(eepromValue) == 0xFFFF &&
@@ -59,9 +62,7 @@ void setup()
 
     relay.open();
 
-    // TODO: esp checks
-    // TODO: wps support
-    esp.begin(9600);
+    esp.begin(SOFTWARE_SERIAL_BAUD_RATE);
 
 #ifdef TEST_DEBUG
     Serial.println("Running tests...");
