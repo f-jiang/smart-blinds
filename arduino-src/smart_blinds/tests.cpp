@@ -220,9 +220,9 @@ static void testWearLeveledEepromObject()
     for (int i = 0; i < TEST_EEPROM_QUEUE_ITEM_COUNT; i++) {
         addr = storage.m_curAddr;
         queueRollover = (storage.m_curAddr == (storage.m_endAddr - storage.m_circularQueueItemSize));
-        value = TEST_EEPROM_STORED_VALUE + i;
+        value = TEST_EEPROM_STORED_VALUE;
         storage.put(value);
-        assert(storage.get(value) == (TEST_EEPROM_STORED_VALUE + i));
+        assert(storage.get(value) == (TEST_EEPROM_STORED_VALUE));
 
         if (queueRollover) {
             assert(storage.m_curAddr == storage.m_startAddr);
