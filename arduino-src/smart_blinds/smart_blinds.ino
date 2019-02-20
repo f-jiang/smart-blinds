@@ -2,6 +2,7 @@
 
 #include "smart_blinds.h"
 
+#include <stdlib.h>
 #include <SoftwareSerial.h>
 #ifdef TEST_DEBUG
 #include "tests.h"
@@ -25,6 +26,12 @@
 
 #define ESP_RX                      8
 #define ESP_TX                      9
+
+#define COMMAND_TILT                't'
+#define COMMAND_CALIBRATE_HIGH      'h'
+#define COMMAND_CALIBRATE_LOW       'l'
+
+#define STR_BUF_LEN                 10
 
 Stepper stepper(STEPS_PER_REVOLUTION, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 Relay relay(RELAY_PIN, Relay::Mode::NORMALLY_OPEN);
@@ -75,10 +82,55 @@ void loop()
 {
 #ifndef TEST_DEBUG
     btn.check();
+
+    if (esp.available() > 0) {
+        String data;
+        while (esp.available() > 0) {
+            data += (char) esp.read();
+        }
+
+        char command = data.charAt(0);
+        data.remove(0, 1);
+        int value = data.toInt();
+        stepper_pos_t new_value;
+        char buf[STR_BUF_LEN];
+
+        switch (command) {
+            case COMMAND_TILT:
+                relay.close();
+                setStepperPos((stepper_pos_t) value);
+                relay.open();
+
+                getStepperPos(new_value);
+                sprintf(buf, "%d", new_value);
+                esp.write(COMMAND_TILT);
+                esp.write(buf);
+                break;
+            case COMMAND_CALIBRATE_HIGH:
+                relay.open();
+                setStepperPosUpperLimit((stepper_pos_t) value);
+
+                getStepperPosUpperLimit(new_value);
+                sprintf(buf, "%d", new_value);
+                esp.write(COMMAND_CALIBRATE_HIGH);
+                esp.write(buf);
+                break;
+            case COMMAND_CALIBRATE_LOW:
+                relay.open();
+                setStepperPosLowerLimit((stepper_pos_t) value);
+
+                getStepperPosLowerLimit(new_value);
+                sprintf(buf, "%d", new_value);
+                esp.write(COMMAND_CALIBRATE_LOW);
+                esp.write(buf);
+                break;
+            default:
+                break;
+        }
+    }
+
+    delay(100);
 #endif  // TEST_DEBUG
-
-    // TODO: esp checks
-
 }
 
 void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/) {
