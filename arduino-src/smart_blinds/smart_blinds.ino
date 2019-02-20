@@ -289,7 +289,7 @@ bool setStepperPos(stepper_pos_t pos)
 
         if (success) {
             stepper.step(stepValue);
-            stepperPos.get(pos);
+            stepperPos.put(pos);
         }
 #ifndef DEBUG
     }
