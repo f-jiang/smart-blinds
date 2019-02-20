@@ -1,12 +1,13 @@
-#define TEST_DEBUG
+/* #define TEST */
+#define DEBUG
 
 #include "smart_blinds.h"
 
 #include <stdlib.h>
 #include <SoftwareSerial.h>
-#ifdef TEST_DEBUG
+#ifdef TEST
 #include "tests.h"
-#endif  // TEST_DEBUG
+#endif
 #include "wear_leveled_eeprom_object.h"
 
 #define SERIAL_BAUD_RATE            9600
@@ -53,16 +54,40 @@ void setup()
         stepperPosLowerLimit.get(eepromValue) == 0xFFFF &&
         stepperPosUpperLimit.get(eepromValue) == 0xFFFF)
     {
+#ifdef DEBUG
+        Serial.println("no position or limits in storage; using defaults instead");
+#endif
         eepromValue = STEPPER_POSITION_DEFAULT;
         stepperPos.put(eepromValue);
         eepromValue = STEPPER_POSITION_LOWER_LIMIT_DEFAULT;
         stepperPosLowerLimit.put(eepromValue);
         eepromValue = STEPPER_POSITION_UPPER_LIMIT_DEFAULT;
         stepperPosUpperLimit.put(eepromValue);
+#ifndef DEBUG
     }
+#else
+    } else {
+        stepper_pos_t pos, lower_limit, upper_limit;
+        stepperPos.get(pos);
+        stepperPosLowerLimit.get(lower_limit);
+        stepperPosLowerLimit.get(upper_limit);
+
+        Serial.print("found following in storage: position ");
+        Serial.print(pos);
+        Serial.print(", lower limit ");
+        Serial.print(lower_limit);
+        Serial.print(", upper limit ");
+        Serial.println(upper_limit);
+    }
+#endif
 
     relay.begin();
     stepper.setSpeed(RPM);
+#ifdef DEBUG
+    Serial.print("stepper speed set to ");
+    Serial.print(RPM);
+    Serial.println(" rpm");
+#endif
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     btn.setEventHandler(handleBtnEvent);
@@ -71,16 +96,16 @@ void setup()
 
     esp.begin(SOFTWARE_SERIAL_BAUD_RATE);
 
-#ifdef TEST_DEBUG
+#ifdef TEST
     Serial.println("Running tests...");
     test();
     Serial.println("Tests complete and successful");
-#endif  // TEST_DEBUG
+#endif
 }
 
 void loop()
 {
-#ifndef TEST_DEBUG
+#ifndef TEST
     btn.check();
 
     if (esp.available() > 0) {
@@ -89,11 +114,23 @@ void loop()
             data += (char) esp.read();
         }
 
+#ifdef DEBUG
+        Serial.print("received data from serial: ");
+        Serial.println(data);
+#endif
+
         char command = data.charAt(0);
         data.remove(0, 1);
         int value = data.toInt();
         stepper_pos_t new_value;
         char buf[STR_BUF_LEN];
+
+#ifdef DEBUG
+        Serial.print("values extracted from incoming serial data: command ");
+        Serial.print(command);
+        Serial.print(", value ");
+        Serial.println(value);
+#endif
 
         switch (command) {
             case COMMAND_TILT:
@@ -105,6 +142,11 @@ void loop()
                 sprintf(buf, "%d", new_value);
                 esp.write(COMMAND_TILT);
                 esp.write(buf);
+
+#ifdef DEBUG
+                Serial.print("new stepper position: ");
+                Serial.println(new_value);
+#endif
                 break;
             case COMMAND_CALIBRATE_HIGH:
                 relay.open();
@@ -114,6 +156,11 @@ void loop()
                 sprintf(buf, "%d", new_value);
                 esp.write(COMMAND_CALIBRATE_HIGH);
                 esp.write(buf);
+
+#ifdef DEBUG
+                Serial.print("new stepper upper limit: ");
+                Serial.println(new_value);
+#endif
                 break;
             case COMMAND_CALIBRATE_LOW:
                 relay.open();
@@ -123,14 +170,22 @@ void loop()
                 sprintf(buf, "%d", new_value);
                 esp.write(COMMAND_CALIBRATE_LOW);
                 esp.write(buf);
+
+#ifdef DEBUG
+                Serial.print("new stepper lower limit: ");
+                Serial.println(new_value);
+#endif
                 break;
             default:
+#ifdef DEBUG
+                Serial.println("not a valid command");
+#endif
                 break;
         }
     }
 
     delay(100);
-#endif  // TEST_DEBUG
+#endif
 }
 
 void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_t /*state*/)
@@ -138,6 +193,10 @@ void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_
     switch (eventType) {
         case ace_button::AceButton::kEventReleased:
         {
+#ifdef DEBUG
+            Serial.println("button press detected");
+#endif
+
             stepper_pos_t pos, lowerLimit;
             stepperPos.get(pos);
             stepperPos.get(lowerLimit);
@@ -154,6 +213,13 @@ void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_
             esp.write(COMMAND_TILT);
             esp.write(buf);
 
+#ifdef DEBUG
+            Serial.print("new stepper position: ");
+            Serial.print(new_value);
+            Serial.print(" (");
+            Serial.print((new_value == lowerLimit) ? "lower" : "upper");
+            Serial.println(" limit)");
+#endif
             break;
         }
         default:
@@ -225,7 +291,17 @@ bool setStepperPos(stepper_pos_t pos)
             stepper.step(stepValue);
             stepperPos.get(pos);
         }
+#ifndef DEBUG
     }
+#else
+        Serial.print("set stepper position to ");
+        Serial.println(pos);
+    } else if (!relay.isClosed()) {
+        Serial.println("setting stepper position failed because relay is open");
+    } else {
+        Serial.println("setting stepper position failed because new position is out-of-bounds");
+    }
+#endif
 
     return success;
 }
