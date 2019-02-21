@@ -131,7 +131,7 @@ void loop() {
 #ifdef DEBUG
                 Serial.print("publishing: ");
                 Serial.print(data.c_str());
-                Serial.println(" -> " MQTT_CALIBRATE_HIGH_COMMAND_TOPIC);
+                Serial.println(" -> " MQTT_CALIBRATE_HIGH_STATUS_TOPIC);
 #endif
                 mqttClient.publish(MQTT_CALIBRATE_HIGH_STATUS_TOPIC, data.c_str());
                 break;
@@ -139,7 +139,7 @@ void loop() {
 #ifdef DEBUG
                 Serial.print("publishing: ");
                 Serial.print(data.c_str());
-                Serial.println(" -> " MQTT_CALIBRATE_LOW_COMMAND_TOPIC);
+                Serial.println(" -> " MQTT_CALIBRATE_LOW_STATUS_TOPIC);
 #endif
                 mqttClient.publish(MQTT_CALIBRATE_LOW_STATUS_TOPIC, data.c_str());
                 break;
