@@ -139,8 +139,7 @@ void loop()
                 relay.open();
 
                 getStepperPos(new_value);
-                sprintf(buf, "%d", new_value);
-                esp.write(COMMAND_TILT);
+                sprintf(buf, "%c%d", COMMAND_TILT, new_value);
                 esp.write(buf);
 
 #ifdef DEBUG
@@ -153,8 +152,7 @@ void loop()
                 setStepperPosUpperLimit((stepper_pos_t) value);
 
                 getStepperPosUpperLimit(new_value);
-                sprintf(buf, "%d", new_value);
-                esp.write(COMMAND_CALIBRATE_HIGH);
+                sprintf(buf, "%c%d", COMMAND_CALIBRATE_HIGH, new_value);
                 esp.write(buf);
 
 #ifdef DEBUG
@@ -167,8 +165,7 @@ void loop()
                 setStepperPosLowerLimit((stepper_pos_t) value);
 
                 getStepperPosLowerLimit(new_value);
-                sprintf(buf, "%d", new_value);
-                esp.write(COMMAND_CALIBRATE_LOW);
+                sprintf(buf, "%c%d", COMMAND_CALIBRATE_LOW, new_value);
                 esp.write(buf);
 
 #ifdef DEBUG
