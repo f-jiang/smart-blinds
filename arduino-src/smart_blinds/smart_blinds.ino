@@ -134,9 +134,7 @@ void loop()
 
         switch (command) {
             case COMMAND_TILT:
-                relay.close();
                 setStepperPos((stepper_pos_t) value);
-                relay.open();
 
                 getStepperPos(new_value);
                 sprintf(buf, "%c%d", COMMAND_TILT, new_value);
@@ -198,10 +196,8 @@ void handleBtnEvent(ace_button::AceButton* /*button*/, uint8_t eventType, uint8_
             stepperPos.get(pos);
             stepperPos.get(lowerLimit);
 
-            relay.close();
             setStepperPos((pos == lowerLimit) ?
                           stepperPosUpperLimit.get(eepromValue) : stepperPosLowerLimit.get(eepromValue));
-            relay.open();
 
             stepper_pos_t new_value;
             char buf[STR_BUF_LEN];
@@ -271,7 +267,7 @@ bool setStepperPos(stepper_pos_t pos)
 {
     bool success = false;
 
-    if (relay.isClosed() && !isPosOutOfBounds(pos)) {
+    if (!isPosOutOfBounds(pos)) {
         success = true;
 
         stepper_pos_t stepValue;
@@ -284,8 +280,10 @@ bool setStepperPos(stepper_pos_t pos)
             success = false;
         } */
 
-        if (success) {
+        if (success && stepValue != 0) {
+            relay.close();
             stepper.step(stepValue);
+            relay.open();
             stepperPos.put(pos);
         }
 #ifndef DEBUG
