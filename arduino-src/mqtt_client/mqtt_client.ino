@@ -108,6 +108,7 @@ void loop() {
         String data;
         while (Serial.available() > 0) {
             data += (char) Serial.read();
+            delay(10);
         }
 
 #ifdef DEBUG
