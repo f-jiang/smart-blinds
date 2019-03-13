@@ -16,9 +16,9 @@
 #define MQTT_AVAILABILITY_TOPIC             "home-assistant/smart-blinds/availability"
 #define MQTT_TILT_COMMAND_TOPIC             "home-assistant/smart-blinds/tilt"
 #define MQTT_TILT_STATUS_TOPIC              "home-assistant/smart-blinds/tilt-state"
-#define MQTT_CALIBRATE_HIGH_COMMAND_TOPIC   "home-assistant/smart-blinds/set-upper-limit"
+#define MQTT_CALIBRATE_HIGH_COMMAND_TOPIC   "home-assistant/smart-blinds/upper-limit"
 #define MQTT_CALIBRATE_HIGH_STATUS_TOPIC    "home-assistant/smart-blinds/upper-limit-state"
-#define MQTT_CALIBRATE_LOW_COMMAND_TOPIC    "home-assistant/smart-blinds/set-lower-limit"
+#define MQTT_CALIBRATE_LOW_COMMAND_TOPIC    "home-assistant/smart-blinds/lower-limit"
 #define MQTT_CALIBRATE_LOW_STATUS_TOPIC     "home-assistant/smart-blinds/lower-limit-state"
 
 #define MQTT_PAYLOAD_AVAILABLE              "online"

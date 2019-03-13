@@ -134,7 +134,9 @@ void loop()
 
         switch (command) {
             case COMMAND_TILT:
-                setStepperPos((stepper_pos_t) value);
+                if (data.length() > 0) {
+                    setStepperPos((stepper_pos_t) value);
+                }
 
                 getStepperPos(new_value);
                 sprintf(buf, "%c%d", COMMAND_TILT, new_value);
@@ -146,8 +148,10 @@ void loop()
 #endif
                 break;
             case COMMAND_CALIBRATE_HIGH:
-                relay.open();
-                setStepperPosUpperLimit((stepper_pos_t) value);
+                if (data.length() > 0) {
+                    relay.open();
+                    setStepperPosUpperLimit((stepper_pos_t) value);
+                }
 
                 getStepperPosUpperLimit(new_value);
                 sprintf(buf, "%c%d", COMMAND_CALIBRATE_HIGH, new_value);
@@ -159,8 +163,10 @@ void loop()
 #endif
                 break;
             case COMMAND_CALIBRATE_LOW:
-                relay.open();
-                setStepperPosLowerLimit((stepper_pos_t) value);
+                if (data.length() > 0) {
+                    relay.open();
+                    setStepperPosLowerLimit((stepper_pos_t) value);
+                }
 
                 getStepperPosLowerLimit(new_value);
                 sprintf(buf, "%c%d", COMMAND_CALIBRATE_LOW, new_value);
