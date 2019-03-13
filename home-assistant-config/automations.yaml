@@ -1,0 +1,16 @@
+- id: '1550460886717'
+  alias: Close Blinds at Night
+  trigger:
+  - event: sunrise
+    platform: sun
+  condition: []
+  action:
+  - service: cover.close_cover_tilt
+- id: '1550460925226'
+  alias: Open Blinds Daytime
+  trigger:
+  - event: sunrise
+    platform: sun
+  condition: []
+  action:
+  - service: cover.open_cover_tilt
